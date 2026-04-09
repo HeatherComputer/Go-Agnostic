@@ -1,4 +1,4 @@
-# Go-Agnostic
+# Go!Agnostic
 
 A library to make it easy to support multiple Minecraft versions with a single mod.
 
