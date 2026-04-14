@@ -7,12 +7,12 @@ import computer.heather.goagnostic.api.Logger;
 public class InitEvent {
     
     private final Logger logger;
-    private final Path serverDir;
+    private final String worldName;
     private final Path worldDir;
 
-    public InitEvent(Logger logger, Path serverDir, Path worldDir) {
+    public InitEvent(Logger logger, String worldName, Path worldDir) {
         this.logger = logger;
-        this.serverDir = serverDir;
+        this.worldName = worldName;
         this.worldDir = worldDir;
     }
 
@@ -20,8 +20,8 @@ public class InitEvent {
         return logger;
     }
 
-    public Path getServerDir() {
-        return serverDir;
+    public String getWorldName() {
+        return worldName;
     }
 
     public Path getWorldDir() {
