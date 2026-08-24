@@ -11,5 +11,13 @@ public @interface Mod {
     String modName();
     String version();
 
+    Target[] targets();
+    
+
+
+    public static enum Target {
+        NEO_1_21
+    }
+
 
 }   
