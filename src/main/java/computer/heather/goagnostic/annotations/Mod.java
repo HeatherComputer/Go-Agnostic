@@ -16,7 +16,20 @@ public @interface Mod {
 
 
     public static enum Target {
-        NEO_1_21
+        NEO_1_21;
+
+
+        public String getImplName() {
+            switch (this) {
+
+                case NEO_1_21:
+                    return "null"; // TODO: Implement this properly when the implementation is ready.
+
+                default:
+                    throw new IllegalArgumentException("Unknown target: " + this);
+                    
+            }
+        }
     }
 
 
