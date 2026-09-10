@@ -28,6 +28,6 @@ replay_pid*
 .vscode
 scripts
 
-build
+*build
 
 ALL VARIABLES
