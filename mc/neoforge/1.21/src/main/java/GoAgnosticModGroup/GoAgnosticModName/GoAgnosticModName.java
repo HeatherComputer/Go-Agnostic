@@ -1,4 +1,4 @@
-package _ModGroup_._ModName_;
+package GoAgnosticModGroup.GoAgnosticModName;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,8 +26,8 @@ import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
-@Mod("_ModName_")
-public class _ModName_
+@Mod("GoAgnosticModName")
+public class GoAgnosticModName
 {
 
     private static final Logger LOGGER = LogUtils.getLogger();   
@@ -39,7 +39,7 @@ public class _ModName_
     public static final ArrayList<String> players = new ArrayList<>();
 
 
-    public _ModName_(IEventBus modEventBus)
+    public GoAgnosticModName(IEventBus modEventBus)
     {
         // Register ourselves for server and other game events we are interested in
         NeoForge.EVENT_BUS.register(this);
