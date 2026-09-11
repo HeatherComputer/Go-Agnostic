@@ -152,12 +152,12 @@ tasks.withType(ProcessResources).configureEach {
 tasks.named('jar', Jar).configure {
     manifest {
         attributes([
-                "Specification-Title"     : "GoAgnosticModName",
-                "Specification-Vendor"    : "_ModAuthor_",
+                "Specification-Title"     : "goagnosticmodname",
+                "Specification-Vendor"    : "goagnosticmodauthors",
                 "Specification-Version"   : "1", // We are version 1 of ourselves
                 "Implementation-Title"    : project.name,
                 "Implementation-Version"  : project.jar.archiveVersion,
-                "Implementation-Vendor"   : "_ModAuthor_",
+                "Implementation-Vendor"   : "goagnosticmodauthors",
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }
