@@ -56,7 +56,7 @@ public class ModProcessor extends AbstractProcessor {
                             element.getAnnotation(Mod.class));
 
                         processingEnv.getFiler().createClassFile(element.getAnnotation(Mod.class)
-                                .group().replace("/", ".") + "." + element.getAnnotation(Mod.class).modid() + "." + element.getAnnotation(Mod.class).modid(), element)
+                                .group().toLowerCase().replace("/", ".").replace(" ",".") + "." + element.getAnnotation(Mod.class).modid() + "." + element.getAnnotation(Mod.class).modid(), element)
                             .openOutputStream()
                             .write(remapped);
 
