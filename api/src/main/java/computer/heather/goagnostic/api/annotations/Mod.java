@@ -9,7 +9,8 @@ public @interface Mod {
 
     String modid();
     String modName();
-    String version();
+    int version();
+    String group();
 
     Target[] targets();
     
