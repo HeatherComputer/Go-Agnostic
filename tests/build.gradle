@@ -53,6 +53,7 @@ repositories {
 }
 
 dependencies {
+    annotationProcessor files('../api/build/libs/Go!Agnostic.jar')
     implementation files('../api/build/libs/Go!Agnostic.jar')
 }
 
