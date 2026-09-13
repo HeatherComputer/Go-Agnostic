@@ -30,8 +30,8 @@ repositories {
     // Add here additional repositories if required by some of the dependencies below.
 }
 
-base {
-    archivesName = "GoAgnosticTemplate" + "-neoforge-1.21"
+tasks.jar {
+    archiveFileName.set("GoAgnosticTemplate-neoforge-1.21.jar")
 }
 
 // Mojang ships Java 21 to end users in 1.21, so mods should target Java 21.
