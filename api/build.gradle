@@ -1,3 +1,4 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 buildscript {
     repositories {
         // These repositories are only for Gradle plugins, put any other repositories in the repository block further below
@@ -12,15 +13,27 @@ plugins {
     id 'eclipse'
     id 'maven-publish'
     id 'java'
+    id 'com.gradleup.shadow' version '8.3.0'
+}
+
+tasks.named('shadowJar', ShadowJar) {
+    enableRelocation true
+    archiveClassifier.set('')
+    mergeServiceFiles()
+}
+
+tasks.named('build') {
+    dependsOn tasks.named('shadowJar')
 }
 
 //This copies each individual template jar into the resources folder so that they can be included and used as expected
+//The .bin ending means that shadow doesn't touch them.
 
 def templateJars = fileTree("../mc") {
     include '**/GoAgnosticTemplate-*.jar'
 }
 
-jar {
+processResources {
     templateJars.each { templateJar ->
 
         from({
@@ -35,7 +48,13 @@ jar {
                     templateJar.name.length() - ".jar".length()
                 )
 
-            into "templates/${templateName}"
+            into "templates/${templateName}"            
+            
+            rename { String name ->
+                name.endsWith(".class")
+                    ? "${name}.bin"
+                    : name
+            }
         }
     }
 }
@@ -61,7 +80,7 @@ repositories {
 
 
 dependencies {
-
+    implementation 'org.ow2.asm:asm-commons:9.10.1'
 }
 
 // Example for how to get properties into the manifest for reading at runtime.
