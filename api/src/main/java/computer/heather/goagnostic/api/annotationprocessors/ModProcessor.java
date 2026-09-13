@@ -12,8 +12,10 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic.Kind;
+import javax.tools.FileObject;
 
 import computer.heather.goagnostic.api.annotations.Mod;
+import computer.heather.goagnostic.api.util.ModTomlRemapper;
 import computer.heather.goagnostic.api.util.ProcessorUtils;
 
 @SupportedAnnotationTypes("computer.heather.goagnostic.api.annotations.Mod")
@@ -45,18 +47,20 @@ public class ModProcessor extends AbstractProcessor {
                     return false;
                 }
 
+                
+                Mod mod = element.getAnnotation(Mod.class);
                 // We need to generate a class for each target specified in the annotation. We can get the targets from the annotation's values.
-                Mod.Target[] targets = element.getAnnotation(Mod.class).targets();
+                Mod.Target[] targets = mod.targets();
                 for (Mod.Target target : targets) {
                     processingEnv.getMessager().printMessage(Kind.WARNING, target.getImplName());
 
                     try {
                         processingEnv.getMessager().printMessage(Kind.WARNING, "/templates/GoAgnosticTemplate-" + target.getImplName() + "/goagnosticmodgroup/goagnosticmodid/goagnosticmodid.class.bin");
 						byte[] remapped = ProcessorUtils.remapFile(ModProcessor.class.getResourceAsStream("/templates/GoAgnosticTemplate-" + target.getImplName() + "/goagnosticmodgroup/goagnosticmodid/goagnosticmodid.class.bin"), 
-                            element.getAnnotation(Mod.class));
+                            mod);
 
-                        processingEnv.getFiler().createClassFile(element.getAnnotation(Mod.class)
-                                .group().toLowerCase().replace("/", ".").replace(" ",".") + "." + element.getAnnotation(Mod.class).modid() + "." + element.getAnnotation(Mod.class).modid(), element)
+                        processingEnv.getFiler().createClassFile(mod
+                                .group().toLowerCase().replace("/", ".").replace(" ",".") + "." + mod.modid() + "." + mod.modid(), element)
                             .openOutputStream()
                             .write(remapped);
 
@@ -64,6 +68,18 @@ public class ModProcessor extends AbstractProcessor {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+
+                    //Now we need to output a correctly generated mods.toml (or similar for the version in use)
+                    String inputLocation = "/templates/GoAgnosticTemplate-" + target.getImplName() + "/" + target.getModTomlTemplatePath();
+                    try {
+                        FileObject outputLocation = processingEnv.getFiler().createResource(javax.tools.StandardLocation.CLASS_OUTPUT, "", target.getModTomlTemplatePath(), element);
+
+                        //We should defer this to another class, really.
+                        ModTomlRemapper.remapModToml(inputLocation, outputLocation, mod, ModProcessor.class);
+                    } catch (IOException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
 
                 }
 

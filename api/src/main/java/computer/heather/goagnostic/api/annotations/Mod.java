@@ -31,6 +31,18 @@ public @interface Mod {
                     
             }
         }
+
+        public String getModTomlTemplatePath() {
+            switch (this) {
+
+                case NEO_1_21:
+                    return "META-INF/neoforge.mods.toml";
+
+                default:
+                    throw new IllegalArgumentException("Unknown target: " + this);
+                    
+            }
+        }
     }
 
 
