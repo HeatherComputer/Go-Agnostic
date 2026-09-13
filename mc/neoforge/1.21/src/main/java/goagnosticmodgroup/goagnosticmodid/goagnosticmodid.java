@@ -17,19 +17,19 @@ import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 
 @Mod("goagnosticmodid")
-public class goagnosticmodname {
+public class goagnosticmodid {
 
     private static final Class<? extends GoAgnosticMod> goAgnosticModClass = null; //Null here. AccessTransformer will replace this with the user mod class at compile time!
     
     //And an instance of it
     private final GoAgnosticMod goAgnosticMod;
 
-    public static final String MOD_NAME = "goagnosticmodname";
+    public static final String MOD_NAME = "goagnosticmodid";
     public static final String MOD_ID = "goagnosticmodid";
 
     private static final Logger LOGGER = LogUtils.getLogger();
 
-    public goagnosticmodname(IEventBus modEventBus) 
+    public goagnosticmodid(IEventBus modEventBus) 
             throws NoSuchMethodException, SecurityException, InstantiationException, 
             IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 
