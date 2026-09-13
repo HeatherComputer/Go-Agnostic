@@ -6,7 +6,7 @@ import computer.heather.goagnostic.api.annotations.Mod.Target;
 import computer.heather.goagnostic.api.baseclasses.GoAgnosticMod;
 
 
-@Mod(modName = "testmodname", modid = "testmodid", targets = { Target.NEO_1_21 }, version = "1")
+@Mod(modName = "testmodname", modid = "testmodid", targets = { Target.NEO_1_21 }, version = 1, group = "testmodgroup")
 public class TestGoAgnosticMod extends GoAgnosticMod {
 
     /*
