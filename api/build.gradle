@@ -15,22 +15,29 @@ plugins {
 }
 
 //This copies each individual template jar into the resources folder so that they can be included and used as expected
-task copyTemplates(type: Copy) {
-    from '../mc'
-    into "src/main/resources/templatejars" 
+
+def templateJars = fileTree("../mc") {
     include '**/GoAgnosticTemplate-*.jar'
-    includeEmptyDirs = false
-    duplicatesStrategy = DuplicatesStrategy.FAIL
-    eachFile {
-        path = name
-    }
-    doFirst {
-        delete "src/main/resources/templatejars"
-    }
 }
 
-tasks.named('processResources') {
-    dependsOn tasks.named('copyTemplates')
+jar {
+    templateJars.each { templateJar ->
+
+        from({
+            zipTree(templateJar)
+        }) {
+            exclude "META-INF/**"
+            exclude "computer/**"
+
+            def templateName =
+                templateJar.name.substring(
+                    0,
+                    templateJar.name.length() - ".jar".length()
+                )
+
+            into "templates/${templateName}"
+        }
+    }
 }
 
 
