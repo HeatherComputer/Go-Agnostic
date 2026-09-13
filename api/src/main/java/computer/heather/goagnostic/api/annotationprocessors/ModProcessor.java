@@ -50,17 +50,21 @@ public class ModProcessor extends AbstractProcessor {
                 for (Mod.Target target : targets) {
                     processingEnv.getMessager().printMessage(Kind.WARNING, target.getImplName());
 
+                    try {
+                        processingEnv.getMessager().printMessage(Kind.WARNING, "/templates/GoAgnosticTemplate-" + target.getImplName() + "/goagnosticmodgroup/goagnosticmodid/goagnosticmodid.class.bin");
+						byte[] remapped = ProcessorUtils.remapFile(ModProcessor.class.getResourceAsStream("/templates/GoAgnosticTemplate-" + target.getImplName() + "/goagnosticmodgroup/goagnosticmodid/goagnosticmodid.class.bin"), 
+                            element.getAnnotation(Mod.class));
 
-                    try (InputStream resource = ModProcessor.class.getResourceAsStream("/templatejars/GoAgnosticTemplate-" + target.getImplName() + ".jar")) {
-                        if (resource == null) {
-                            processingEnv.getMessager().printMessage(Kind.ERROR, "Template JAR not found for target: " + target.getImplName());
-                            return false;
-                        }
+                        processingEnv.getFiler().createClassFile(element.getAnnotation(Mod.class)
+                                .group().replace("/", ".") + "." + element.getAnnotation(Mod.class).modid() + "." + element.getAnnotation(Mod.class).modid(), element)
+                            .openOutputStream()
+                            .write(remapped);
 
-                    } catch (IOException e) {
-                        processingEnv.getMessager().printMessage(Kind.ERROR, e.getMessage());
-                        return false;
-                    }
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
                 }
 
 
