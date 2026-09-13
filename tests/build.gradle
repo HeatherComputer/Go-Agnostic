@@ -14,26 +14,6 @@ plugins {
     id 'java'
 }
 
-//This copies each individual template jar into the resources folder so that they can be included and used as expected
-task copyTemplates(type: Copy) {
-    from '../mc'
-    into "src/main/resources/templatejars" 
-    include '**/GoAgnosticTemplate-*.jar'
-    includeEmptyDirs = false
-    duplicatesStrategy = DuplicatesStrategy.FAIL
-    eachFile {
-        path = name
-    }
-    doFirst {
-        delete "src/main/resources/templatejars"
-    }
-}
-
-tasks.named('processResources') {
-    dependsOn tasks.named('copyTemplates')
-}
-
-
 version = ''
 group = 'computer.heather.goagnostic' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "Go!Agnostic"
