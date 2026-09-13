@@ -16,7 +16,7 @@ import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 
-@Mod("goagnosticmodid")
+@Mod(goagnosticmodid.MOD_ID)
 public class goagnosticmodid {
 
     private static final Class<? extends GoAgnosticMod> goAgnosticModClass = null; //Null here. AccessTransformer will replace this with the user mod class at compile time!
@@ -26,6 +26,7 @@ public class goagnosticmodid {
 
     public static final String MOD_NAME = "goagnosticmodid";
     public static final String MOD_ID = "goagnosticmodid";
+    public static final String MOD_GROUP = "goagnosticmodgroup";
 
     private static final Logger LOGGER = LogUtils.getLogger();
 
