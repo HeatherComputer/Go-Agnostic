@@ -1,5 +1,10 @@
 package computer.heather.goagnostic.api.util;
 
+import java.io.IOException;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+import java.util.jar.JarInputStream;
+
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
@@ -24,6 +29,5 @@ public class ProcessorUtils {
                 types.erasure(baseClass.asType())
         );
     }
-
 
 }

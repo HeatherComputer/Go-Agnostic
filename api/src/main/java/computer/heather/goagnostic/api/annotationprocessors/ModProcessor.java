@@ -1,6 +1,9 @@
 package computer.heather.goagnostic.api.annotationprocessors;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Set;
+import java.util.jar.JarFile;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.RoundEnvironment;
@@ -46,6 +49,18 @@ public class ModProcessor extends AbstractProcessor {
                 Mod.Target[] targets = element.getAnnotation(Mod.class).targets();
                 for (Mod.Target target : targets) {
                     processingEnv.getMessager().printMessage(Kind.WARNING, target.getImplName());
+
+
+                    try (InputStream resource = ModProcessor.class.getResourceAsStream("/templatejars/GoAgnosticTemplate-" + target.getImplName() + ".jar")) {
+                        if (resource == null) {
+                            processingEnv.getMessager().printMessage(Kind.ERROR, "Template JAR not found for target: " + target.getImplName());
+                            return false;
+                        }
+
+                    } catch (IOException e) {
+                        processingEnv.getMessager().printMessage(Kind.ERROR, e.getMessage());
+                        return false;
+                    }
                 }
 
 
