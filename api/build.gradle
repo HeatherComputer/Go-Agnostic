@@ -39,7 +39,7 @@ processResources {
         from({
             zipTree(templateJar)
         }) {
-            exclude "META-INF/**"
+            //exclude "META-INF/**"
             exclude "computer/**"
 
             def templateName =
