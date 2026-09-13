@@ -15,8 +15,8 @@ plugins {
 }
 
 version = ''
-group = 'computer.heather.goagnostic' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "Go!Agnostic"
+group = 'computer.heather.testmod' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = "testmod"
 
 //We HAVE to target 8 so it can be used by earlier stuff
 java.toolchain.languageVersion = JavaLanguageVersion.of(8)
