@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import com.mojang.logging.LogUtils;
 
 import computer.heather.goagnostic.api.baseclasses.GoAgnosticMod;
+import computer.heather.goagnostic.api.util.placeholders.GoAgnosticModPlaceholder;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
@@ -19,12 +20,12 @@ import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 @Mod(goagnosticmodid.MOD_ID)
 public class goagnosticmodid {
 
-    private static final Class<? extends GoAgnosticMod> goAgnosticModClass = null; //Null here. AccessTransformer will replace this with the user mod class at compile time!
+    private static final Class<? extends GoAgnosticMod> goAgnosticModClass = GoAgnosticModPlaceholder.class; //Placeholder here. AccessTransformer will replace this with the user mod class at compile time!
     
     //And an instance of it
     private final GoAgnosticMod goAgnosticMod;
 
-    public static final String MOD_NAME = "goagnosticmodid";
+    public static final String MOD_NAME = "goagnosticmodname";
     public static final String MOD_ID = "goagnosticmodid";
     public static final String MOD_GROUP = "goagnosticmodgroup";
 
