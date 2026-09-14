@@ -30,7 +30,10 @@ public class ModTomlRemapper {
                 line = line.replace("goagnosticmodgroup", mod.group())
                            .replace("goagnosticmodid", mod.modid())
                            .replace("goagnosticmodname", mod.modName())
-                           .replace("goagnosticmodversion", String.valueOf(mod.version()));
+                           .replace("goagnosticmodversion", mod.version())
+                           .replace("goagnosticmodauthors", String.join(", ", mod.authors()))
+                           .replace("goagnosticmoddescription", mod.description())
+                           .replace("goagnosticmodlicense", mod.license());
                 writer.write(line);
                 writer.newLine();
             }

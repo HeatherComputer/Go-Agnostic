@@ -9,8 +9,11 @@ public @interface Mod {
 
     String modid();
     String modName();
-    int version();
+    String version();
     String group();
+    String[] authors() default {};
+    String description() default "";
+    String license() default "ARR";
 
     Target[] targets();
     
