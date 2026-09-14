@@ -21,7 +21,9 @@ import computer.heather.goagnostic.api.annotations.Mod;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Types;
 
 public class ProcessorUtils {
@@ -44,7 +46,7 @@ public class ProcessorUtils {
         );
     }
 
-    public static byte[] remapFile(InputStream file, Mod mod) throws IOException {
+    public static byte[] remapFile(InputStream file, Mod mod, String annotatedClass) throws IOException {
 
         byte[] bytes = readAllBytes(file);
 
@@ -59,11 +61,11 @@ public class ProcessorUtils {
                 System.out.println(internalName);
 
                 if ("computer/heather/goagnostic/api/util/placeholders/GoAgnosticModPlaceholder".equals(internalName)) {
-                    return mod.group().replace("/", ".").replace(" ",".") + "." + mod.modid();
+                    return StringUtils.standardWithSlashes(annotatedClass);
                 }
                 
                 return internalName
-                        .replace("goagnosticmodgroup", mod.group().replace(".", "/").replace(" ",".").toLowerCase())
+                        .replace("goagnosticmodgroup", StringUtils.lowerWithSlashes(mod.group()))
                         .replace("goagnosticmodid", mod.modid());
             };
         };
@@ -74,7 +76,7 @@ public class ProcessorUtils {
             public FieldVisitor visitField(int access, String name, String descriptor, String signature, Object value) {
                 
                 if ("goagnosticmodgroup".equals(value)) {
-                    value = mod.group().replace("/", ".").replace(" ",".");
+                    value =StringUtils.lowerWithSlashes(mod.group());
                 } else if ("goagnosticmodid".equals(value)) {
                     value = mod.modid();
                 } else if ("goagnosticmodname".equals(value)) {
@@ -94,7 +96,7 @@ public class ProcessorUtils {
                     @Override
                     public void visitLdcInsn(Object value) {
                         if ("goagnosticmodgroup".equals(value)) {
-                            value = mod.group().replace("/", ".").replace(" ",".").toLowerCase();
+                            value = StringUtils.lowerWithSlashes(mod.group());
                         } else if ("goagnosticmodid".equals(value)) {
                             value = mod.modid();
                         } else if ("goagnosticmodname".equals(value)) {
@@ -121,7 +123,7 @@ public class ProcessorUtils {
                     public void visit(String name, Object value) {
 
                         if ("goagnosticmodgroup".equals(value)) {
-                            value = mod.group().replace("/", ".").replace(" ",".").toLowerCase();
+                            value = StringUtils.lowerWithSlashes(mod.group());
 
                         } else if ("goagnosticmodid".equals(value)) {
                             value = mod.modid();

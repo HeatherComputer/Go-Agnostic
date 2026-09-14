@@ -57,7 +57,7 @@ public class ModProcessor extends AbstractProcessor {
                     try {
                         processingEnv.getMessager().printMessage(Kind.WARNING, "/templates/GoAgnosticTemplate-" + target.getImplName() + "/goagnosticmodgroup/goagnosticmodid/goagnosticmodid.class.bin");
 						byte[] remapped = ProcessorUtils.remapFile(ModProcessor.class.getResourceAsStream("/templates/GoAgnosticTemplate-" + target.getImplName() + "/goagnosticmodgroup/goagnosticmodid/goagnosticmodid.class.bin"), 
-                            mod);
+                            mod, ((TypeElement) element).getQualifiedName().toString());
 
                         processingEnv.getFiler().createClassFile(mod
                                 .group().toLowerCase().replace("/", ".").replace(" ",".") + "." + mod.modid() + "." + mod.modid(), element)
