@@ -1,8 +1,11 @@
 package computer.heather.goagnostic.api.util;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.nio.file.Path;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
@@ -25,6 +28,8 @@ import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Types;
+import javax.tools.FileObject;
+import javax.tools.StandardLocation;
 
 public class ProcessorUtils {
     
@@ -164,6 +169,24 @@ public class ProcessorUtils {
             out.write(buffer, 0, read);
         }
         return out.toByteArray();
+    }
+
+
+    public static File getBuildDir(ProcessingEnvironment env) throws IOException {
+    
+
+        //This doesn't actually give us the build dir, but we can fix this
+        FileObject resource = env.getFiler().getResource(StandardLocation.CLASS_OUTPUT, "", "dummy");
+        URI uri = resource.toUri();
+        File file = new File(uri);
+
+        while (!"build".equals(file.getName().toLowerCase())) {
+            file = file.getParentFile();
+        }
+        return file;
+
+        //This mod is a crime against humanity....
+
     }
 
 }

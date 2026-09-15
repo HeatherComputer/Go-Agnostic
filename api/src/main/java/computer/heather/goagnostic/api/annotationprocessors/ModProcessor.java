@@ -1,5 +1,7 @@
 package computer.heather.goagnostic.api.annotationprocessors;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Set;
@@ -13,10 +15,12 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.FileObject;
+import javax.tools.StandardLocation;
 
 import computer.heather.goagnostic.api.annotations.Mod;
 import computer.heather.goagnostic.api.util.ModTomlRemapper;
 import computer.heather.goagnostic.api.util.ProcessorUtils;
+import computer.heather.goagnostic.api.util.StringUtils;
 
 @SupportedAnnotationTypes("computer.heather.goagnostic.api.annotations.Mod")
 public class ModProcessor extends AbstractProcessor {
@@ -52,17 +56,29 @@ public class ModProcessor extends AbstractProcessor {
                 // We need to generate a class for each target specified in the annotation. We can get the targets from the annotation's values.
                 Mod.Target[] targets = mod.targets();
                 for (Mod.Target target : targets) {
-                    processingEnv.getMessager().printMessage(Kind.WARNING, target.getImplName());
 
                     try {
                         processingEnv.getMessager().printMessage(Kind.WARNING, "/templates/GoAgnosticTemplate-" + target.getImplName() + "/goagnosticmodgroup/goagnosticmodid/goagnosticmodid.class.bin");
 						byte[] remapped = ProcessorUtils.remapFile(ModProcessor.class.getResourceAsStream("/templates/GoAgnosticTemplate-" + target.getImplName() + "/goagnosticmodgroup/goagnosticmodid/goagnosticmodid.class.bin"), 
                             mod, ((TypeElement) element).getQualifiedName().toString());
 
-                        processingEnv.getFiler().createClassFile(mod
-                                .group().toLowerCase().replace("/", ".").replace(" ",".") + "." + mod.modid() + "." + mod.modid(), element)
+                        processingEnv.getFiler().createClassFile(StringUtils.lowerWithPeriods(mod
+                                .group() + "." + mod.modid() + "." + mod.modid()), element)
                             .openOutputStream()
                             .write(remapped);
+
+                        File buildDir = ProcessorUtils.getBuildDir(processingEnv);
+                        File outputDir = new File(buildDir, "goagnostic/" + target.getImplName());
+
+                        //And now we write all the files!
+                        File outputFile = new File(outputDir, StringUtils.lowerWithSlashes(mod
+                                .group() + "." + mod.modid() + "." + mod.modid()) + ".class");
+                        if (!outputFile.getParentFile().exists()) outputFile.getParentFile().mkdirs();
+                        FileOutputStream fileOutputStream = new FileOutputStream(outputFile);
+                        fileOutputStream.write(remapped);
+                        fileOutputStream.flush();
+                        fileOutputStream.close();
+                        
 
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
@@ -75,7 +91,18 @@ public class ModProcessor extends AbstractProcessor {
                         FileObject outputLocation = processingEnv.getFiler().createResource(javax.tools.StandardLocation.CLASS_OUTPUT, "", target.getModTomlTemplatePath(), element);
 
                         //We should defer this to another class, really.
+
+                        //This is cursed but may work. Toml should be in the right spot, and then the right spot relative to the manually outputted class
                         ModTomlRemapper.remapModToml(inputLocation, outputLocation, mod, ModProcessor.class);
+
+                        File buildDir = ProcessorUtils.getBuildDir(processingEnv);
+                        File outputDir = new File(buildDir, "goagnostic/" + target.getImplName());
+                        File outputFile = new File(outputDir, target.getModTomlTemplatePath());
+                        if (!outputFile.getParentFile().exists()) outputFile.getParentFile().mkdirs();
+                        ModTomlRemapper.remapModToml(inputLocation, outputFile, mod, getClass());
+
+                        //HI FUTURE HEATHER THIS TEST WORKED NEXT STEP IS FUCKING PACKAGING THE JARS 
+
                     } catch (IOException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
