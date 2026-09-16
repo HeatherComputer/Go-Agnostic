@@ -1,4 +1,4 @@
-package computer.heather.goagnostic.api.annotationprocessors;
+package computer.heather.goagnostic.internal.annotationprocessors;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -21,9 +21,9 @@ import javax.tools.FileObject;
 import javax.tools.StandardLocation;
 
 import computer.heather.goagnostic.api.annotations.Mod;
-import computer.heather.goagnostic.api.util.ModTomlRemapper;
-import computer.heather.goagnostic.api.util.ProcessorUtils;
-import computer.heather.goagnostic.api.util.StringUtils;
+import computer.heather.goagnostic.internal.util.ModTomlRemapper;
+import computer.heather.goagnostic.internal.util.ProcessorUtils;
+import computer.heather.goagnostic.internal.util.StringUtils;
 
 @SupportedAnnotationTypes("computer.heather.goagnostic.api.annotations.Mod")
 public class ModProcessor extends AbstractProcessor {
@@ -143,7 +143,7 @@ public class ModProcessor extends AbstractProcessor {
                     BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile)));
                     writer.write(mod.modid());
                     writer.close();
-                    
+
                 } catch (IOException e) {
                         processingEnv.getMessager().printMessage(Kind.ERROR, "GoAgnostic encountered an error: " + e.getMessage(), element);
                 }

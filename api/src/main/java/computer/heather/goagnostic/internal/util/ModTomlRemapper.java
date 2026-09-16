@@ -1,4 +1,4 @@
-package computer.heather.goagnostic.api.util;
+package computer.heather.goagnostic.internal.util;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -11,8 +11,8 @@ import java.io.OutputStreamWriter;
 
 import javax.tools.FileObject;
 
-import computer.heather.goagnostic.api.annotationprocessors.ModProcessor;
 import computer.heather.goagnostic.api.annotations.Mod;
+import computer.heather.goagnostic.internal.annotationprocessors.ModProcessor;
 
 public class ModTomlRemapper {
 

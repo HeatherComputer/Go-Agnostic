@@ -1,4 +1,4 @@
-package computer.heather.goagnostic.api.util.placeholders;
+package computer.heather.goagnostic.api.util;
 
 import computer.heather.goagnostic.api.baseclasses.GoAgnosticMod;
 

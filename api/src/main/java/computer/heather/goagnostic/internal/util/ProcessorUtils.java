@@ -1,4 +1,4 @@
-package computer.heather.goagnostic.api.util;
+package computer.heather.goagnostic.internal.util;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
