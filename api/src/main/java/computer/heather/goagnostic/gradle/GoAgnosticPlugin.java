@@ -207,6 +207,10 @@ public class GoAgnosticPlugin implements Plugin<Project> {
             });
 
             targets.close();
+            originalInputStream.close();
+
+            //Finally, get rid of the original jar to avoid confusion
+            inputFile.delete();
 
         }
     }
