@@ -3,7 +3,7 @@
   "modid": "goagnosticmodid",
   "name": "goagnosticmodname",
   "description": "goagnosticmoddescription",
-  "version": "goagnosticmodgroup",
+  "version": "goagnosticmodversion",
   "url": "",
   "updateUrl": "",
   "authorList": ["goagnosticmodauthors"],
