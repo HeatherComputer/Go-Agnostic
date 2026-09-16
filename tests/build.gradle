@@ -19,10 +19,6 @@ plugins {
 apply plugin: 'computer.heather.goagnostic'
 
 
-tasks.named('build') {
-    dependsOn tasks.named('shadowJar')
-}
-
 version = '1'
 group = 'computer.heather.testmod' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "testmod"
