@@ -28,7 +28,7 @@ import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.TaskProvider;
 import org.gradle.jvm.tasks.Jar;
 
-import computer.heather.goagnostic.api.util.ProcessorUtils;
+import computer.heather.goagnostic.internal.util.ProcessorUtils;
 
 public class GoAgnosticPlugin implements Plugin<Project> {
 
@@ -99,7 +99,7 @@ public class GoAgnosticPlugin implements Plugin<Project> {
             File buildDir = ProcessorUtils.getBuildDir(inputFile);
             //Get the modid
             File metadataDir = new File(buildDir, "goagnostic");
-            File idFile = new File(buildDir, "modid.txt");
+            File idFile = new File(metadataDir, "modid.txt");
             BufferedReader idReader = new BufferedReader(new FileReader(idFile));
             String modid = idReader.readLine();
 
@@ -134,6 +134,23 @@ public class GoAgnosticPlugin implements Plugin<Project> {
                         
                     }
 
+                    //Now Go!Agnostic's api
+                    ZipInputStream inputStream = new ZipInputStream(new FileInputStream(getGoAgnosticJar()));
+                    while ((inputEntry = inputStream.getNextEntry()) != null) { 
+                        if (!inputEntry.getName().contains("computer/heather/goagnostic/api")) continue;
+                        zipOutputStream.putNextEntry(new ZipEntry(inputEntry.getName()));
+                        if (!inputEntry.isDirectory()) {
+                            while (true) {
+                                int i = inputStream.read(bytes);
+                                if (i < 0) break;
+                                    zipOutputStream.write(bytes, 0, i);
+                            }
+                        }
+                        
+                    }
+                    
+
+                
                     //And now the new files
                     Path targetDir = new File(metadataDir, target).toPath() ;
 
@@ -179,7 +196,13 @@ public class GoAgnosticPlugin implements Plugin<Project> {
                     e.printStackTrace();
                 }
 
-                GoAgnosticRemapper.remapJar(outputZip, modid);
+                try {
+                    getLogger().lifecycle("Remapping jar: " + outputZip.getName());
+                    GoAgnosticRemapper.remapJar(outputZip, modid);
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
 
             });
 
@@ -187,6 +210,39 @@ public class GoAgnosticPlugin implements Plugin<Project> {
 
         }
     }
+
+
+    
+    private static File getGoAgnosticJar() throws IOException {
+
+        File jar;
+
+        try {
+            jar = new File(GoAgnosticPlugin.class
+                            .getProtectionDomain()
+                            .getCodeSource()
+                            .getLocation()
+                            .toURI()
+            );
+
+        } catch (Exception e) {
+            throw new IOException("Failed to locate GoAgnostic jar", e);
+        }
+
+
+        if (!jar.exists()) {
+            throw new IOException("GoAgnostic jar does not exist: " + jar);
+        }
+
+
+        if (!jar.isFile()) {
+            throw new IOException("GoAgnostic is not running from a jar: " + jar);
+        }
+
+
+        return jar;
+    }
+
 
 }
 
