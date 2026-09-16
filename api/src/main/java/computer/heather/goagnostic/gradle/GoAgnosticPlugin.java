@@ -17,6 +17,7 @@ import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 import org.gradle.api.DefaultTask;
+import org.gradle.api.GradleException;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -72,6 +73,8 @@ public class GoAgnosticPlugin implements Plugin<Project> {
     }
     public static abstract class GoAgnosticTask extends DefaultTask {
 
+        static boolean success = true;
+
 
         @InputFile
         public abstract RegularFileProperty getInputJar();
@@ -92,8 +95,6 @@ public class GoAgnosticPlugin implements Plugin<Project> {
             //Get the user's classes from their jar file
             File inputFile = getInputJar().getAsFile().get();
 
-            FileInputStream fileInputStream = new FileInputStream(inputFile);
-            ZipInputStream originalInputStream = new ZipInputStream(fileInputStream);
 
             
             File buildDir = ProcessorUtils.getBuildDir(inputFile);
@@ -109,11 +110,15 @@ public class GoAgnosticPlugin implements Plugin<Project> {
             BufferedReader targets = new BufferedReader(new FileReader(targetsFile));
             
             targets.lines().forEach((target) -> {
-
-                getLogger().lifecycle(target);
-                
-                File outputZip = new File(buildDir + "/libs/", baseName + "-" + target + version + ".jar");
                 try {
+                    getLogger().lifecycle(target);
+                    
+                    //Gotta be done this way
+                    FileInputStream fileInputStream = new FileInputStream(inputFile);
+                    ZipInputStream originalInputStream = new ZipInputStream(fileInputStream);
+                    
+                    File outputZip = new File(buildDir + "/libs/", baseName + "-" + target + version + ".jar");
+                    
                     FileOutputStream outputStream = new FileOutputStream(outputZip);
                     ZipOutputStream zipOutputStream = new ZipOutputStream(outputStream);
                     
@@ -135,13 +140,13 @@ public class GoAgnosticPlugin implements Plugin<Project> {
                     }
 
                     //Now Go!Agnostic's api
-                    ZipInputStream inputStream = new ZipInputStream(new FileInputStream(getGoAgnosticJar()));
-                    while ((inputEntry = inputStream.getNextEntry()) != null) { 
+                    ZipInputStream apiInputStream = new ZipInputStream(new FileInputStream(getGoAgnosticJar()));
+                    while ((inputEntry = apiInputStream.getNextEntry()) != null) { 
                         if (!inputEntry.getName().contains("computer/heather/goagnostic/api")) continue;
                         zipOutputStream.putNextEntry(new ZipEntry(inputEntry.getName()));
                         if (!inputEntry.isDirectory()) {
                             while (true) {
-                                int i = inputStream.read(bytes);
+                                int i = apiInputStream.read(bytes);
                                 if (i < 0) break;
                                     zipOutputStream.write(bytes, 0, i);
                             }
@@ -185,29 +190,26 @@ public class GoAgnosticPlugin implements Plugin<Project> {
                         }
                     });
 
+
                     zipOutputStream.close();
-                    
+                    originalInputStream.close();
+                    apiInputStream.close();
 
-                } catch (FileNotFoundException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-
-                try {
                     getLogger().lifecycle("Remapping jar: " + outputZip.getName());
                     GoAgnosticRemapper.remapJar(outputZip, modid);
-                } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    
+                } catch (Exception e) {
+                    getLogger().error("Error with target: " + target + " : " + e.getMessage(), e);
+                    GoAgnosticTask.success = false;
                 }
-
             });
 
             targets.close();
-            originalInputStream.close();
+
+            //Throw if failed
+            if (!GoAgnosticTask.success) {
+                throw new GradleException("An error was encountered processing one or more targets!");
+            }
 
             //Finally, get rid of the original jar to avoid confusion
             inputFile.delete();
