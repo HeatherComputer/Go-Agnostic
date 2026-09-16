@@ -14,10 +14,27 @@ plugins {
     id 'maven-publish'
     id 'java'
     id 'com.gradleup.shadow' version '8.3.0'
+    id 'groovy-gradle-plugin'
+}
+
+gradlePlugin {
+    plugins {
+        goAgnostic {
+            id = 'computer.heather.goagnostic'
+            implementationClass =
+                    'computer.heather.goagnostic.gradle.GoAgnosticPlugin'
+        }
+    }
+}
+
+configurations {
+    shade
 }
 
 tasks.named('shadowJar', ShadowJar) {
-    enableRelocation true
+    configurations = [project.configurations.shade]
+    relocate 'org.objectweb.asm',
+            'computer.heather.goagnostic.gradle.internal.asm'
     archiveClassifier.set('')
     mergeServiceFiles()
 }
@@ -81,6 +98,7 @@ repositories {
 
 dependencies {
     implementation 'org.ow2.asm:asm-commons:9.10.1'
+    shade 'org.ow2.asm:asm-commons:9.10.1'
 }
 
 // Example for how to get properties into the manifest for reading at runtime.
