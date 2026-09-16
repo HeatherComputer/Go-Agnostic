@@ -126,6 +126,7 @@ public class ModProcessor extends AbstractProcessor {
                     BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile)));
                     for (String target : dirs) {
                         writer.write(target);
+                        writer.write("\n");
                     } 
                     writer.close();  
 
