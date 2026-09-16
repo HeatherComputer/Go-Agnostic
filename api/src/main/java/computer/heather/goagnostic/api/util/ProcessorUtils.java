@@ -63,7 +63,7 @@ public class ProcessorUtils {
             
             @Override
             public String map(String internalName) {
-                System.out.println(internalName);
+                //System.out.println(internalName);
 
                 if ("computer/heather/goagnostic/api/util/placeholders/GoAgnosticModPlaceholder".equals(internalName)) {
                     return StringUtils.standardWithSlashes(annotatedClass);
@@ -163,7 +163,7 @@ public class ProcessorUtils {
         byte[] buffer = new byte[8192];
         int read = 0;
         
-        System.out.println(in);
+        //System.out.println(in);
 
         while ((read = in.read(buffer)) != -1) {
             out.write(buffer, 0, read);
@@ -179,6 +179,10 @@ public class ProcessorUtils {
         FileObject resource = env.getFiler().getResource(StandardLocation.CLASS_OUTPUT, "", "dummy");
         URI uri = resource.toUri();
         File file = new File(uri);
+
+        return getBuildDir(file);
+    }
+    public static File getBuildDir(File file) throws IOException {
 
         while (!"build".equals(file.getName().toLowerCase())) {
             file = file.getParentFile();
