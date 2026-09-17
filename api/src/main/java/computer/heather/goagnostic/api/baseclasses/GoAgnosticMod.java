@@ -2,6 +2,8 @@ package computer.heather.goagnostic.api.baseclasses;
 
 import java.util.function.Consumer;
 
+import computer.heather.goagnostic.api.util.player.Player;
+
 public class GoAgnosticMod {
 
     /*
@@ -30,6 +32,12 @@ public class GoAgnosticMod {
         LOGGER = logger;
     }
 
+    /*
+    Let's put lifecycle events in here - other events may be elsewhere?
+    Default implementation for all does nothing, but can be overridden as desired.
+    What even counts as lifecycle for this? Do tick events count?
+    */
+
     public void onServerStarting() {
         // Default implementation does nothing
     }
@@ -40,6 +48,18 @@ public class GoAgnosticMod {
 
     public void onServerStopping() {
         // Default implementation does nothing
+    }
+
+    public void serverTick() {
+        //Again, default implementation does nothing
+    }
+
+    public void playerJoin(Player player) {
+        //last comment of this type
+    }
+    
+    public void playerLeave(Player player) {
+        
     }
 
 
