@@ -10,7 +10,7 @@ import computer.heather.goagnostic.api.util.chat.ChatSymbols.Colour;
 import computer.heather.goagnostic.api.util.player.Player;
 
 
-@Mod(modName = "Test Mod Name", modid = "testmodid", targets = { Target.NEO_1_21 }, 
+@Mod(modName = "Test Mod Name", modid = "testmodid", targets = { Target.NEO_1_21, Target.FORGE_1_12 }, 
 version = "1", group = "Test Mod Group", authors = { "Heather" }, description = "This is a test mod for GoAgnostic", license = "BSD-3-Clause")
 public class TestGoAgnosticMod extends GoAgnosticMod {
 
