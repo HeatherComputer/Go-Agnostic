@@ -28,6 +28,17 @@ import computer.heather.goagnostic.internal.util.StringUtils;
 @SupportedAnnotationTypes("computer.heather.goagnostic.api.annotations.Mod")
 public class ModProcessor extends AbstractProcessor {
 
+
+
+    public static final String[] otherClasses = new String[] {
+        "/util/Player",
+        "/util/chat/ChatHandler",
+        "/util/chat/Message"
+    };
+
+
+
+
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
 
@@ -66,16 +77,11 @@ public class ModProcessor extends AbstractProcessor {
                     dirs.add(target.getImplName());
 
                     try {
-                        processingEnv.getMessager().printMessage(Kind.OTHER, "/templates/GoAgnosticTemplate-" + target.getImplName() + "/goagnosticmodgroup/goagnosticmodid/goagnosticmodid.class.bin");
+                        
+                        //Remap the main class
+                        processingEnv.getMessager().printMessage(Kind.OTHER, target.getImplName() + "/goagnosticmodgroup/goagnosticmodid/goagnosticmodid.class.bin");
 						byte[] remapped = ProcessorUtils.remapFile(ModProcessor.class.getResourceAsStream("/templates/GoAgnosticTemplate-" + target.getImplName() + "/goagnosticmodgroup/goagnosticmodid/goagnosticmodid.class.bin"), 
                             mod, ((TypeElement) element).getQualifiedName().toString());
-
-                            /*
-                        processingEnv.getFiler().createClassFile(StringUtils.lowerWithPeriods(mod
-                                .group() + "." + mod.modid() + "." + mod.modid()), element)
-                            .openOutputStream()
-                            .write(remapped);
-                            */
 
                         File buildDir = ProcessorUtils.getBuildDir(processingEnv);
                         File outputDir = new File(buildDir, "goagnostic/" + target.getImplName());
@@ -88,6 +94,25 @@ public class ModProcessor extends AbstractProcessor {
                         fileOutputStream.write(remapped);
                         fileOutputStream.flush();
                         fileOutputStream.close();
+
+                        //Now remap other classes
+                        for (String className : otherClasses) {
+                            
+                            processingEnv.getMessager().printMessage(Kind.OTHER, target.getImplName() + className);
+                            remapped = ProcessorUtils.remapFile(ModProcessor.class.getResourceAsStream("/templates/GoAgnosticTemplate-" + target.getImplName() + "/goagnosticmodgroup/goagnosticmodid" + className + ".class.bin"), 
+                                mod, ((TypeElement) element).getQualifiedName().toString());
+                            
+                            outputFile = new File(outputDir, StringUtils.lowerWithSlashes(mod
+                                .group() + "." + mod.modid() + ".") + className + ".class");
+                                
+                            if (!outputFile.getParentFile().exists()) outputFile.getParentFile().mkdirs();
+                                
+                            fileOutputStream = new FileOutputStream(outputFile);
+                            fileOutputStream.write(remapped);
+                            fileOutputStream.flush();
+                            fileOutputStream.close();
+
+                        }
                         
 
                     } catch (IOException e) {
