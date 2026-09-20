@@ -8,6 +8,10 @@ import org.apache.logging.log4j.Logger;
 
 import computer.heather.goagnostic.api.baseclasses.GoAgnosticMod;
 import computer.heather.goagnostic.api.util.placeholders.GoAgnosticModPlaceholder;
+import goagnosticmodgroup.goagnosticmodid.util.Player;
+import goagnosticmodgroup.goagnosticmodid.util.chat.ChatHandler;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -16,6 +20,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 
 
 
@@ -37,6 +42,8 @@ public class goagnosticmodid
 
     private static Logger LOGGER;
 
+    public static MinecraftServer server;
+
 
 
     @EventHandler
@@ -54,11 +61,13 @@ public class goagnosticmodid
     {
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
+        MinecraftForge.EVENT_BUS.register(new ChatHandler());
     }
 
-        @EventHandler
+    @EventHandler
     public void onServerStarting(FMLServerStartingEvent event)
     {
+        server = event.getServer();
         goAgnosticMod.onServerStarting();
         
     }
@@ -71,6 +80,18 @@ public class goagnosticmodid
     @EventHandler
     public void onServerStopping(FMLServerStoppingEvent event) {
         goAgnosticMod.onServerStopping();
+    }
+
+    @EventHandler 
+    public void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
+        Player player = new Player(event.player);
+        goAgnosticMod.playerJoin(player);
+    }
+
+    @EventHandler 
+    public void onPlayerLeave(PlayerEvent.PlayerLoggedOutEvent event) {
+        Player player = new Player(event.player);
+        goAgnosticMod.playerLeave(player);
     }
 
 }
