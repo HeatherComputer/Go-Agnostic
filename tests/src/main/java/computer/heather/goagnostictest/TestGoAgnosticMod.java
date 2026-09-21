@@ -53,8 +53,14 @@ public class TestGoAgnosticMod extends GoAgnosticMod {
             message.getSender().sendMessage(Colour.RED + "You are muted!");
         }
         else {
-            message.getSender().sendMessage("oi oi");
+            ChatManager.sendSystemMessage("Oi Oi");
         }
+        if (message.getText().contains("marco")) {
+            for (Player player : getPlayers()) {
+                LOGGER.info(player.getName());
+                player.sendMessage("POLO!");
+            }
+        } 
     }
 
 

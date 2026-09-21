@@ -1,6 +1,7 @@
 package computer.heather.goagnostic.api.baseclasses;
 
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import computer.heather.goagnostic.api.util.player.Player;
 
@@ -17,12 +18,18 @@ public class GoAgnosticMod {
     Non-abstract methods do not have to be overridden! Depending on the method they'll either do nothing or have some basic default behaviour.
     Abstract methods of course must be overriden.
 
+    Final non-internal methods are there to be used as desired.
+
+    Some methods are internal and shouldn't be interacted with. 
+
     */
     
 
     public final String MOD_NAME;
     public final String MOD_ID;
     public final Logger LOGGER;
+
+    private Supplier<Player[]> playerSupplier;
 
 
 
@@ -62,6 +69,14 @@ public class GoAgnosticMod {
         
     }
 
+
+    public final Player[] getPlayers() {
+        return playerSupplier.get();
+    }
+
+    public final void internal_setPlayerSupplier(Supplier<Player[]> supplier) {
+        this.playerSupplier = supplier;
+    }
 
 
     //Logger class, this is a good spot for it I think

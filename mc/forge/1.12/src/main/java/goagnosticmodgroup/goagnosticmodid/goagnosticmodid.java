@@ -12,6 +12,7 @@ import goagnosticmodgroup.goagnosticmodid.util.Player;
 import goagnosticmodgroup.goagnosticmodid.util.chat.ChatHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.management.PlayerList;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -53,6 +54,7 @@ public class goagnosticmodid
         //Reflection's ugly. But this is the only way to instantiate the user mod class without knowing its name at compile time. This class does need to be compilable.
         Constructor<?> constructor = goAgnosticModClass.getDeclaredConstructor(String.class, String.class, GoAgnosticMod.Logger.class);
         goAgnosticMod = (GoAgnosticMod) constructor.newInstance(MOD_NAME, MOD_ID, new GoAgnosticMod.Logger(LOGGER::info, LOGGER::warn, LOGGER::error));
+        goAgnosticMod.internal_setPlayerSupplier(this::getPlayers);
         LOGGER.info("Go!Agnostic Mod {} ({}) has been initialized.", MOD_NAME, MOD_ID);
     }
 
@@ -92,6 +94,24 @@ public class goagnosticmodid
     public void onPlayerLeave(PlayerEvent.PlayerLoggedOutEvent event) {
         Player player = new Player(event.player);
         goAgnosticMod.playerLeave(player);
+    }
+
+
+
+
+
+
+    /*
+    Below consists of some internal methods that aren't useful to the user.
+    */
+
+    public Player[] getPlayers() {
+        EntityPlayer[] onlinePlayers = server.getPlayerList().getPlayers().toArray(new EntityPlayer[0]);
+        Player[] result = new Player[onlinePlayers.length];
+        for (int i = 0; i < onlinePlayers.length; i++) {
+            result[i] = new Player(onlinePlayers[i]);
+        }
+        return result;
     }
 
 }
