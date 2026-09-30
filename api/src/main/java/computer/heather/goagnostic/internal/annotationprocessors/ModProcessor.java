@@ -17,9 +17,6 @@ import computer.heather.goagnostic.internal.util.StringUtils;
 
 public class ModProcessor {
 
-
-
-
     public void processTarget(Target target, RoundEnvironment roundEnv, ProcessingEnvironment processingEnv, Mod mod, Element modElement) throws IOException {
         //Remap the main class
         processingEnv.getMessager().printMessage(Kind.OTHER, target.getImplName() + "/goagnosticmodgroup/goagnosticmodid/goagnosticmodid.class.bin");
