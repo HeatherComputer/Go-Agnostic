@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.annotation.Annotation;
 import java.net.URI;
 import java.nio.file.Path;
 import java.util.jar.JarEntry;
@@ -192,5 +193,51 @@ public class ProcessorUtils {
         //This mod is a crime against humanity....
 
     }
+
+    /*
+    Helper method. 
+    Checks if the provided type is a nested class, and if so returns its outer class.
+    Otherwise, returns null.
+    */
+    public static TypeElement getOuterOrNull(TypeElement type) {
+        Element enclosing = type.getEnclosingElement();
+        if (enclosing instanceof TypeElement) return (TypeElement) enclosing;
+        return null;
+    }
+
+    /*
+    Helper method.
+    Returns true if the class has a specific annotation. Otherwise, returns false.
+    */
+    public static <A extends Annotation> boolean hasAnnotation(Element element, Class<A> annotationClass) {
+        A annotationInstance = element.getAnnotation(annotationClass);
+        return annotationInstance != null;
+    }
+
+
+
+    public static String remapString(Mod mod, String input) {
+        return input
+            .replace("goagnosticmodgroup", StringUtils.lowerWithSlashes(mod.group()))
+            .replace("goagnosticmodid", mod.modid())
+            .replace("goagnosticmodname", mod.modName())
+            .replace("goagnosticmodversion", mod.version())
+            .replace("goagnosticmodauthors", String.join(", ", mod.authors()))
+            .replace("goagnosticmoddescription", mod.description())
+            .replace("goagnosticmodlicense", mod.license());
+    }
+
+    public static String remapStringWithPeriods(Mod mod, String input) {
+        return input
+            .replace("goagnosticmodgroup", StringUtils.lowerWithPeriods(mod.group()))
+            .replace("goagnosticmodid", mod.modid())
+            .replace("goagnosticmodname", mod.modName())
+            .replace("goagnosticmodversion", mod.version())
+            .replace("goagnosticmodauthors", String.join(", ", mod.authors()))
+            .replace("goagnosticmoddescription", mod.description())
+            .replace("goagnosticmodlicense", mod.license());
+    }
+
+
 
 }

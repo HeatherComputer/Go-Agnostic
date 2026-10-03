@@ -15,6 +15,7 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic.Kind;
 
+import computer.heather.goagnostic.api.annotations.Command;
 import computer.heather.goagnostic.api.annotations.Mod;
 import computer.heather.goagnostic.internal.util.ProcessorUtils;
 import computer.heather.goagnostic.internal.util.StringUtils;
@@ -54,6 +55,8 @@ public class ProcessorBase extends AbstractProcessor {
         }
 
         //We know there's only one.
+        if (roundEnv.getElementsAnnotatedWith(Mod.class).isEmpty()) return false; //Something has gone very wrong
+
         Element modElement = roundEnv.getElementsAnnotatedWith(Mod.class).iterator().next();
         Mod mod = modElement.getAnnotation(Mod.class);
         // We need to generate different classes for each target specified in the annotation. We can get the targets from the annotation's values.
@@ -65,7 +68,7 @@ public class ProcessorBase extends AbstractProcessor {
         //Now we invoke modprocessor and commandprocessor with each target
 
         ModProcessor modProcessor = new ModProcessor();
-        //CommandProcessor commandProcessor = new CommandProcessor();
+        CommandProcessor commandProcessor = new CommandProcessor();
 
         for (Mod.Target target : targets) {
 
@@ -80,7 +83,14 @@ public class ProcessorBase extends AbstractProcessor {
             }
 
             //And do the same with commands
-
+            Set<? extends Element> commands = roundEnv.getElementsAnnotatedWith(Command.class);
+            for (Element commandElement : commands) {
+                try {
+                    commandProcessor.processTarget(target, roundEnv, processingEnv, mod, commandElement);
+                } catch (IOException e) {
+                    processingEnv.getMessager().printMessage(Kind.ERROR, "GoAgnostic encountered an error: " + e.getMessage(), commandElement);
+                }
+            }
 
 
             //Basic remapping for non-annotation classes
