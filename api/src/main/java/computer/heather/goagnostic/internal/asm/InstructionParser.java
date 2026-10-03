@@ -20,7 +20,14 @@ public class InstructionParser {
     public static final HashMap<String, Function<String, AbstractInsnNode>> PARSERS = new HashMap<String, Function<String, AbstractInsnNode>>();
     static {
         PARSERS.put("checkcast", InstructionParser::parseCheckCast);
+
+        PARSERS.put("invokestatic", (input) -> parseMethod(input, Opcodes.INVOKESTATIC));
+        PARSERS.put("invokeinterface", (input) -> parseMethod(input, Opcodes.INVOKEINTERFACE));
+        PARSERS.put("invokevirtual", (input) -> parseMethod(input, Opcodes.INVOKEVIRTUAL));
+        PARSERS.put("invokespecial", (input) -> parseMethod(input, Opcodes.INVOKESPECIAL));
+
         PARSERS.put("lambda", InstructionParser::parseLambda);
+        
     }
     
     
@@ -50,6 +57,14 @@ public class InstructionParser {
     /*
     Below are instruction-specific parsers
     */
+
+    //This handles INVOKEDYNAMIC / INVOKESPECIAL / INVOKEINTERFACE / INVOKEVITUAL the same
+    public static AbstractInsnNode parseMethod(String input, int opcode) {
+        String[] parts = input.split(" ");
+        MethodInsnNode node = new MethodInsnNode(opcode, parts[0], parts[1], parts[2]);
+        return node;
+    }
+
 
     public static AbstractInsnNode parseCheckCast(String input) {
         AbstractInsnNode node = new TypeInsnNode(Opcodes.CHECKCAST, input);
