@@ -19,6 +19,7 @@ public @interface Command {
     String name();
 
 
+    @Target(ElementType.METHOD)
     public static @interface Executes {
 
     }
