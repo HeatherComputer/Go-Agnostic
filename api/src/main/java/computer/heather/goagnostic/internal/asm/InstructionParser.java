@@ -1,0 +1,114 @@
+package computer.heather.goagnostic.internal.asm;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
+
+import org.objectweb.asm.Handle;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
+import org.objectweb.asm.tree.AbstractInsnNode;
+import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.InvokeDynamicInsnNode;
+import org.objectweb.asm.tree.MethodInsnNode;
+import org.objectweb.asm.tree.TypeInsnNode;
+
+public class InstructionParser {
+
+    //A list of keywords and their relevant parsers
+    public static final HashMap<String, Function<String, AbstractInsnNode>> PARSERS = new HashMap<String, Function<String, AbstractInsnNode>>();
+    static {
+        PARSERS.put("checkcast", InstructionParser::parseCheckCast);
+        PARSERS.put("lambda", InstructionParser::parseLambda);
+    }
+    
+    
+    public static InsnList parseInstructionsFromString(String instructions) {
+        //TODO - implement this. This is the most important part of the commandgen, and will be very complex.
+        InsnList list = new InsnList();
+
+        for (String instruction: instructions.split("\\n")) {
+
+            //This allows for comments. Is that even important?
+            if (instruction.isEmpty() || instruction.startsWith("//")) continue;
+
+            String parserString = instruction.split(" ", 2)[0];
+            String rest = instruction.split(" ", 2)[1];
+
+            Function<String,AbstractInsnNode> parser = PARSERS.get(parserString);
+            AbstractInsnNode node = parser.apply(rest);
+
+            list.add(node);
+        }
+
+        return list;
+
+    }
+
+
+    /*
+    Below are instruction-specific parsers
+    */
+
+    public static AbstractInsnNode parseCheckCast(String input) {
+        AbstractInsnNode node = new TypeInsnNode(Opcodes.CHECKCAST, input);
+        return node;
+    }
+
+
+
+    //Lambdas and similar are arguably the most complex.. especially as they need Handles
+
+
+    private static final Map<String, Integer> OPCODES =
+        new HashMap<String, Integer>();
+
+    static {
+        OPCODES.put("invokestatic", Opcodes.H_INVOKESTATIC);
+        OPCODES.put("invokevirtual", Opcodes.H_INVOKEVIRTUAL);
+        OPCODES.put("invokeinterface", Opcodes.H_INVOKEINTERFACE);
+    }
+
+
+    //This is usable for basically any lambda
+    private static final Handle LAMBDA_METAFACTORY = new Handle(
+        Opcodes.H_INVOKESTATIC,
+        "java/lang/invoke/LambdaMetafactory",
+        "metafactory",
+        "(Ljava/lang/invoke/MethodHandles$Lookup;" +
+            "Ljava/lang/String;" +
+            "Ljava/lang/invoke/MethodType;" +
+            "Ljava/lang/invoke/MethodType;" +
+            "Ljava/lang/invoke/MethodHandle;" +
+            "Ljava/lang/invoke/MethodType;)" +
+            "Ljava/lang/invoke/CallSite;",
+        false
+    );
+
+    public static AbstractInsnNode parseLambda(String input) {
+
+        //Each part of the instruction is separated by a space. For convenience, we've a lot of variables. We then need to get a Handle for the InvokeDynamicInsnNode we're about to instantiate:
+        String[] parts = input.split(" ");
+
+        String name = parts[0];
+        
+
+        String factoryDesc = parts[1];
+        String interfaceMethodDesc = parts[2];
+        String instantiatedDesc = parts[7];
+
+        //These variables are for the handle
+        int targetOpcode = OPCODES.get(parts[3]);
+        String targetOwner = parts[4];
+        String targetName = parts[5];
+        String targetDesc = parts[6];
+
+        Handle handle = new Handle(targetOpcode, targetOwner, targetName, targetDesc);
+
+        InvokeDynamicInsnNode node = new InvokeDynamicInsnNode(name, factoryDesc, LAMBDA_METAFACTORY, Type.getMethodType(interfaceMethodDesc), handle, Type.getMethodType(instantiatedDesc));
+        return node;
+        
+    }
+
+}
