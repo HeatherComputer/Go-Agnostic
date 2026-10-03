@@ -1,0 +1,8 @@
+//The most complex part, the lambda
+lambda test ()Ljava/util/function/Predicate; (Ljava/lang/Object;)Z invokestatic goagnosticmodgroup/goagnosticmodid/goagnosticcommandnamecommand require (Lnet/minecraft/commands/CommandSourceStack;)Z (Lnet/minecraft/commands/CommandSourceStack;)Z
+
+//The actual .requires() call. Note the space separation instead of the "." shown in recaf! 
+invokevirtual com/mojang/brigadier/builder/LiteralArgumentBuilder requires (Ljava/util/function/Predicate;)Lcom/mojang/brigadier/builder/ArgumentBuilder;
+
+//Casts back to the LiteralArgumentBuilder that the chain expects
+checkcast com/mojang/brigadier/builder/LiteralArgumentBuilder
