@@ -1,4 +1,5 @@
 //The most complex part, the lambda
+//This is actually an invokedynmic, but is a HELL of a lot more complex. However lambdas are used enough to make a shorthand instead.
 lambda test ()Ljava/util/function/Predicate; (Ljava/lang/Object;)Z invokestatic goagnosticmodgroup/goagnosticmodid/goagnosticcommandnamecommand require (Lnet/minecraft/commands/CommandSourceStack;)Z (Lnet/minecraft/commands/CommandSourceStack;)Z
 
 //The actual .requires() call. Note the space separation instead of the "." shown in recaf! 
