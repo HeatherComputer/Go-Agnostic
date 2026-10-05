@@ -6,4 +6,5 @@ public interface CommandSource {
 
     public void sendMessage(String message);
 
+    public int permissionLevel();
 }

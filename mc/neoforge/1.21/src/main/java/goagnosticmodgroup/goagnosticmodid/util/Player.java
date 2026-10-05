@@ -46,5 +46,15 @@ public class Player implements computer.heather.goagnostic.api.util.player.Playe
         playerEntity.sendSystemMessage(Component.literal(message));
     }
 
+    @Override
+    public int permissionLevel() {
+        //what the fuck is this
+        int[] perms = new int[] {4, 3, 2, 1, 0};
+        for (int i : perms) {
+            if (playerEntity.hasPermissions(i)) return i;
+        }
+        return 0;
+    }
+
 
 }
