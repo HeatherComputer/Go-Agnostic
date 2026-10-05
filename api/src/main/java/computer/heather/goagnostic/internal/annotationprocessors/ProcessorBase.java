@@ -14,9 +14,11 @@ import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic.Kind;
+import javax.tools.FileObject;
 
 import computer.heather.goagnostic.api.annotations.Command;
 import computer.heather.goagnostic.api.annotations.Mod;
+import computer.heather.goagnostic.internal.util.ModTomlRemapper;
 import computer.heather.goagnostic.internal.util.ProcessorUtils;
 import computer.heather.goagnostic.internal.util.StringUtils;
 
@@ -124,6 +126,23 @@ public class ProcessorBase extends AbstractProcessor {
                 processingEnv.getMessager().printMessage(Kind.ERROR, "GoAgnostic encountered an error: " + e.getMessage(), modElement);
             }
             
+         
+            //Now we need to output a correctly generated mods.toml (or similar for the version in use)
+            String inputLocation = "/templates/GoAgnosticTemplate-" + target.getImplName() + "/" + target.getModTomlTemplatePath();
+            try {
+                //This is cursed but may work. Toml should be in the right spot, and then the right spot relative to the manually outputted class
+                //ModTomlRemapper.remapModToml(inputLocation, outputLocation, mod, ModProcessor.class);
+
+                File buildDir = ProcessorUtils.getBuildDir(processingEnv);
+                File outputDir = new File(buildDir, "goagnostic/" + target.getImplName());
+                File outputFile = new File(outputDir, target.getModTomlTemplatePath());
+                if (!outputFile.getParentFile().exists()) outputFile.getParentFile().mkdirs();
+                ModTomlRemapper.remapModToml(inputLocation, outputFile, mod, getClass());
+
+
+            } catch (IOException e) {
+                processingEnv.getMessager().printMessage(Kind.ERROR, "GoAgnostic encountered an error: " + e.getMessage(), modElement);
+            }   
 
                         
 

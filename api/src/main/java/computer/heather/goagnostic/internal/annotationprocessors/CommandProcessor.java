@@ -64,7 +64,7 @@ public class CommandProcessor {
             Executes executesAnnotation = element.getAnnotation(Executes.class);
             if (executesAnnotation != null) {
                 try {
-                    parseExecutes(processingEnv, element, executesAnnotation, target, commandGen, type.getQualifiedName().toString().replace(".", "/"));
+                    commandGen.executes(processingEnv, element, executesAnnotation, target, commandGen, type);
                 } catch (IOException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
@@ -85,7 +85,7 @@ public class CommandProcessor {
         byte[] remapped = ProcessorUtils.remapFile(commandGen.getRemappedBytes(), mod, ((TypeElement) commandElement).getQualifiedName().toString(), map);
 
         File outputFile = new File(outputDir, StringUtils.lowerWithSlashes(mod
-                        .group() + "." + mod.modid() + ".") + className + ".class");
+                        .group() + "." + mod.modid() + ".") + command.name() + "command.class");
                         
                     if (!outputFile.getParentFile().exists()) outputFile.getParentFile().mkdirs();
                         
@@ -94,18 +94,6 @@ public class CommandProcessor {
                     fileOutputStream.flush();
                     fileOutputStream.close();
         
-    }
-
-    private void parseExecutes(ProcessingEnvironment processingEnv, Element element, Executes executesAnnotation, Target target, CommandGen commandGen, String className) throws IOException {
-        
-        String toInject = new String(ProcessorUtils.readAllBytes(CommandProcessor.class.getResourceAsStream("/commandgen/" + target.getImplName() + "/executes")))
-            .replace("EXECUTEOWNER", className)
-            .replace("EXECUTEFUNC", element.getSimpleName());
-
-
-        processingEnv.getMessager().printMessage(Kind.WARNING, toInject);
-
-        commandGen.injectIntoMethod(4, "register", toInject);
     }
 
 }

@@ -2,6 +2,10 @@ package computer.heather.goagnostic.internal.commandgen;
 
 import java.io.IOException;
 
+import javax.annotation.processing.ProcessingEnvironment;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.TypeElement;
+
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.tree.AbstractInsnNode;
@@ -10,7 +14,9 @@ import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
+import computer.heather.goagnostic.api.annotations.Command.Executes;
 import computer.heather.goagnostic.api.annotations.Mod;
+import computer.heather.goagnostic.api.annotations.Mod.Target;
 import computer.heather.goagnostic.internal.asm.InstructionParser;
 import computer.heather.goagnostic.internal.commandgen.neoforge.NeoforgeCommandGens;
 
@@ -71,7 +77,7 @@ public abstract class CommandGen {
     }
 
 
-    public abstract void executes();
+    public abstract void executes(ProcessingEnvironment processingEnv, Element element, Executes executesAnnotation, Target target, CommandGen commandGen, TypeElement type) throws IOException;
     
 
 
@@ -90,5 +96,11 @@ public abstract class CommandGen {
     public byte[] getRemappedBytes() {
         classNode.accept(writer);
         return writer.toByteArray();
+    }
+
+    public void executes(ProcessingEnvironment processingEnv, Element element, Executes executesAnnotation,
+            Target target, CommandGen commandGen) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'executes'");
     }
 }

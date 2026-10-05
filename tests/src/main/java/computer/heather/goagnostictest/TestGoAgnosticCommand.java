@@ -2,6 +2,7 @@ package computer.heather.goagnostictest;
 
 import computer.heather.goagnostic.api.annotations.Command;
 import computer.heather.goagnostic.api.annotations.Command.Executes;
+import computer.heather.goagnostic.api.command.CommandContext;
 
 @Command(name = "gatest") 
 public class TestGoAgnosticCommand {
@@ -9,7 +10,7 @@ public class TestGoAgnosticCommand {
 
 
     @Executes
-    public void run() {
+    public static void run(CommandContext ctx) {
         
     }
 
@@ -18,7 +19,7 @@ public class TestGoAgnosticCommand {
     public static class RedCommand {
 
         @Executes
-        public void run() {
+        public static void run(CommandContext ctx) {
             
         }
 
