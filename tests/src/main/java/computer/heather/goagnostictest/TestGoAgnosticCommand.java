@@ -11,7 +11,7 @@ public class TestGoAgnosticCommand {
 
     @Executes
     public static void run(CommandContext ctx) {
-        
+        ctx.source.sendMessage("Hi! This test command works!!");
     }
 
 

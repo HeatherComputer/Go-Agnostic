@@ -49,6 +49,14 @@ public class goagnosticmodid {
         // Register ourselves for server and other game events we are interested in
         NeoForge.EVENT_BUS.register(this);
         NeoForge.EVENT_BUS.register(new ChatHandler());
+        
+        goAgnosticMod.internal_setPlayerSupplier(() ->
+            server.getPlayerList()
+                .getPlayers()
+                .stream()
+                .map(Player::new)
+                .toArray(Player[]::new)
+        );
     }
 
     @SubscribeEvent
