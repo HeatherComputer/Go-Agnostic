@@ -1,5 +1,7 @@
 package computer.heather.goagnostic.internal.commandgen;
 
+import java.io.IOException;
+
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.tree.AbstractInsnNode;
@@ -8,7 +10,9 @@ import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
+import computer.heather.goagnostic.api.annotations.Mod;
 import computer.heather.goagnostic.internal.asm.InstructionParser;
+import computer.heather.goagnostic.internal.commandgen.neoforge.NeoforgeCommandGens;
 
 
 public abstract class CommandGen {
@@ -50,6 +54,8 @@ public abstract class CommandGen {
             })
             .findFirst()
             .orElse(null);
+        
+        System.out.println(methodNode);
 
 
         int index = 0;
@@ -65,9 +71,24 @@ public abstract class CommandGen {
     }
 
 
-
-
-
+    public abstract void executes();
     
 
+
+    public static CommandGen getCommandGen(Mod.Target target) throws IOException {
+        switch (target) {
+
+            case NEO_1_21:
+                return new NeoforgeCommandGens.NEO_1_21(target.getImplName());
+
+            default:
+                throw new IllegalArgumentException("Unknown target: " + target.getImplName());
+                
+        }
+    }
+
+    public byte[] getRemappedBytes() {
+        classNode.accept(writer);
+        return writer.toByteArray();
+    }
 }

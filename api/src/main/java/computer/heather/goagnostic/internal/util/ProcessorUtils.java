@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.net.URI;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
@@ -51,10 +52,17 @@ public class ProcessorUtils {
                 types.erasure(baseClass.asType())
         );
     }
+    
+    public static byte[] remapFile(byte[] bytes, Mod mod, String annotatedClass, HashMap<String, String> additionalReplacements) throws IOException {
 
-    public static byte[] remapFile(InputStream file, Mod mod, String annotatedClass) throws IOException {
+        HashMap<String, String> toSwap = new HashMap<String, String>();
+        
+        toSwap.put("goagnosticmodgroup", StringUtils.lowerWithSlashes(mod.group()));
+        toSwap.put("goagnosticmodid", mod.modid());
+        toSwap.put("goagnosticmodname", mod.modName());
+        toSwap.put("goagnosticmodversion", mod.version());
 
-        byte[] bytes = readAllBytes(file);
+    
 
         ClassReader reader = new ClassReader(bytes);
         ClassWriter writer = new ClassWriter(reader, 0);
@@ -69,10 +77,16 @@ public class ProcessorUtils {
                 if ("computer/heather/goagnostic/api/util/placeholders/GoAgnosticModPlaceholder".equals(internalName)) {
                     return StringUtils.standardWithSlashes(annotatedClass);
                 }
+
+                for (String toReplace : toSwap.keySet()) {
+                    internalName = internalName.replace(toReplace, toSwap.get(toReplace));
+                }
                 
-                return internalName
-                        .replace("goagnosticmodgroup", StringUtils.lowerWithSlashes(mod.group()))
-                        .replace("goagnosticmodid", mod.modid());
+                for (String toReplace : additionalReplacements.keySet()) {
+                    internalName = internalName.replace(toReplace, additionalReplacements.get(toReplace));
+                }
+                
+                return internalName;
             };
         };
 
@@ -81,14 +95,15 @@ public class ProcessorUtils {
             @Override 
             public FieldVisitor visitField(int access, String name, String descriptor, String signature, Object value) {
                 
-                if ("goagnosticmodgroup".equals(value)) {
-                    value =StringUtils.lowerWithSlashes(mod.group());
-                } else if ("goagnosticmodid".equals(value)) {
-                    value = mod.modid();
-                } else if ("goagnosticmodname".equals(value)) {
-                    value = mod.modName();
-                } else if ("goagnosticmodversion".equals(value)) {
-                    value = mod.version();
+                for (String toReplace : toSwap.keySet()) {
+                    if (toReplace.equals(value)) {
+                        value = toSwap.get(toReplace);
+                    }
+                }
+                for (String toReplace : additionalReplacements.keySet()) {
+                    if (toReplace.equals(value)) {
+                        value = additionalReplacements.get(toReplace);
+                    }
                 }
 
                 return super.visitField(access, name, descriptor, signature, value);
@@ -101,14 +116,15 @@ public class ProcessorUtils {
                 return new MethodVisitor(Opcodes.ASM9, mv) {
                     @Override
                     public void visitLdcInsn(Object value) {
-                        if ("goagnosticmodgroup".equals(value)) {
-                            value = StringUtils.lowerWithSlashes(mod.group());
-                        } else if ("goagnosticmodid".equals(value)) {
-                            value = mod.modid();
-                        } else if ("goagnosticmodname".equals(value)) {
-                            value = mod.modName();
-                        } else if ("goagnosticmodversion".equals(value)) {
-                            value = mod.version();
+                        for (String toReplace : toSwap.keySet()) {
+                            if (toReplace.equals(value)) {
+                                value = toSwap.get(toReplace);
+                            }
+                        }
+                        for (String toReplace : additionalReplacements.keySet()) {
+                            if (toReplace.equals(value)) {
+                                value = additionalReplacements.get(toReplace);
+                            }
                         }
                         super.visitLdcInsn(value);
                     }
@@ -128,17 +144,15 @@ public class ProcessorUtils {
                     @Override
                     public void visit(String name, Object value) {
 
-                        if ("goagnosticmodgroup".equals(value)) {
-                            value = StringUtils.lowerWithSlashes(mod.group());
-
-                        } else if ("goagnosticmodid".equals(value)) {
-                            value = mod.modid();
-
-                        } else if ("goagnosticmodname".equals(value)) {
-                            value = mod.modName();
-
-                        } else if ("goagnosticmodversion".equals(value)) {
-                            value = mod.version();
+                        for (String toReplace : toSwap.keySet()) {
+                            if (toReplace.equals(value)) {
+                                value = toSwap.get(toReplace);
+                            }
+                        }
+                        for (String toReplace : additionalReplacements.keySet()) {
+                            if (toReplace.equals(value)) {
+                                value = additionalReplacements.get(toReplace);
+                            }
                         }
 
                         super.visit(name, value);
@@ -154,6 +168,15 @@ public class ProcessorUtils {
         
         byte[] remapped = writer.toByteArray();
         return remapped;
+
+
+    }
+
+    public static byte[] remapFile(InputStream file, Mod mod, String annotatedClass) throws IOException {
+
+        byte[] bytes = readAllBytes(file);
+
+        return remapFile(bytes, mod, annotatedClass, new HashMap<String, String>());
 
 
     }

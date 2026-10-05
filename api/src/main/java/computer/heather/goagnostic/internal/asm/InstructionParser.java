@@ -20,6 +20,8 @@ public class InstructionParser {
     public static final HashMap<String, Function<String, AbstractInsnNode>> PARSERS = new HashMap<String, Function<String, AbstractInsnNode>>();
     static {
         PARSERS.put("checkcast", InstructionParser::parseCheckCast);
+        PARSERS.put("dup", InstructionParser::parseDup);
+        PARSERS.put("new", InstructionParser::parseNew);
 
         PARSERS.put("invokestatic", (input) -> parseMethod(input, Opcodes.INVOKESTATIC));
         PARSERS.put("invokeinterface", (input) -> parseMethod(input, Opcodes.INVOKEINTERFACE));
@@ -32,16 +34,23 @@ public class InstructionParser {
     
     
     public static InsnList parseInstructionsFromString(String instructions) {
-        //TODO - implement this. This is the most important part of the commandgen, and will be very complex.
         InsnList list = new InsnList();
 
-        for (String instruction: instructions.split("\\n")) {
+        for (String test: instructions.split("\\n")) {
+            String instruction = test.trim();
 
             //This allows for comments. Is that even important?
+            System.out.println(instruction);
             if (instruction.isEmpty() || instruction.startsWith("//")) continue;
 
+            String[] split = instruction.split(" ", 2);
             String parserString = instruction.split(" ", 2)[0];
-            String rest = instruction.split(" ", 2)[1];
+            String rest = "";
+
+            if (split.length > 1) {
+                rest = split[1].trim();
+            }
+
 
             Function<String,AbstractInsnNode> parser = PARSERS.get(parserString);
             AbstractInsnNode node = parser.apply(rest);
@@ -57,6 +66,14 @@ public class InstructionParser {
     /*
     Below are instruction-specific parsers
     */
+
+    public static AbstractInsnNode parseNew(String input) {
+        return new TypeInsnNode(Opcodes.NEW, input);
+    }
+
+    public static AbstractInsnNode parseDup(String ignored) {
+        return new InsnNode(Opcodes.DUP);
+    }
 
     //This handles INVOKEDYNAMIC / INVOKESPECIAL / INVOKEINTERFACE / INVOKEVITUAL the same
     public static AbstractInsnNode parseMethod(String input, int opcode) {
@@ -105,6 +122,8 @@ public class InstructionParser {
 
         //Each part of the instruction is separated by a space. For convenience, we've a lot of variables. We then need to get a Handle for the InvokeDynamicInsnNode we're about to instantiate:
         String[] parts = input.split(" ");
+
+        System.out.println(parts);
 
         String name = parts[0];
         

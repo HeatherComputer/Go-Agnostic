@@ -31,7 +31,8 @@ public class ProcessorBase extends AbstractProcessor {
     public static final String[] otherClasses = new String[] {
         "/util/Player",
         "/util/chat/ChatHandler",
-        "/util/chat/Message"
+        "/util/chat/Message",
+        "/util/CommandHandler"
     };
 
 
