@@ -1,9 +1,9 @@
-//The most complex part, the lambda
-//This is actually an invokedynmic, but is a HELL of a lot more complex. However lambdas are used enough to make a shorthand instead.
-lambda test ()Ljava/util/function/Predicate; (Ljava/lang/Object;)Z invokestatic goagnosticmodgroup/goagnosticmodid/goagnosticcommandnamecommand require (Lnet/minecraft/commands/CommandSourceStack;)Z (Lnet/minecraft/commands/CommandSourceStack;)Z
+new goagnosticmodgroup/goagnosticmodid/util/CommandHandler$RequireChecker
+dup 
 
-//The actual .requires() call. Note the space separation instead of the "." shown in recaf! 
+//Executeowner and executefunc get replaced here
+
+lambda apply ()Ljava/util/function/Function; (Ljava/lang/Object;)Ljava/lang/Object; invokestatic REQUIREOWNER REQUIREFUNC (Lcomputer/heather/goagnostic/api/command/CommandContext;)Z (Lcomputer/heather/goagnostic/api/command/CommandContext;)Ljava/lang/Boolean; 
+invokespecial goagnosticmodgroup/goagnosticmodid/util/CommandHandler$RequireChecker <init> (Ljava/util/function/Function;)V
 invokevirtual com/mojang/brigadier/builder/LiteralArgumentBuilder requires (Ljava/util/function/Predicate;)Lcom/mojang/brigadier/builder/ArgumentBuilder;
-
-//Casts back to the LiteralArgumentBuilder that the chain expects
 checkcast com/mojang/brigadier/builder/LiteralArgumentBuilder

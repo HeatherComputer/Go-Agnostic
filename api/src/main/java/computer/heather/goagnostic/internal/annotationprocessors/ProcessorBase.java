@@ -34,7 +34,8 @@ public class ProcessorBase extends AbstractProcessor {
         "/util/Player",
         "/util/chat/ChatHandler",
         "/util/chat/Message",
-        "/util/CommandHandler"
+        "/util/CommandHandler",
+        "/util/CommandHandler$RequireChecker"
     };
 
 

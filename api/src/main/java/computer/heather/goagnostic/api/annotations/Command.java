@@ -24,4 +24,9 @@ public @interface Command {
 
     }
 
+    @Target(ElementType.METHOD)
+    public static @interface Require {
+
+    }
+
 }   

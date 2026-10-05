@@ -16,6 +16,7 @@ import javax.tools.JavaFileObject;
 import computer.heather.goagnostic.api.annotations.Command;
 import computer.heather.goagnostic.api.annotations.Mod;
 import computer.heather.goagnostic.api.annotations.Command.Executes;
+import computer.heather.goagnostic.api.annotations.Command.Require;
 import computer.heather.goagnostic.api.annotations.Mod.Target;
 import computer.heather.goagnostic.internal.commandgen.CommandGen;
 import computer.heather.goagnostic.internal.util.ProcessorUtils;
@@ -59,19 +60,8 @@ public class CommandProcessor {
         CommandGen commandGen = CommandGen.getCommandGen(target);
         String className = type.getSimpleName().toString();
 
-        type.getEnclosedElements().forEach((element) -> {
-
-            Executes executesAnnotation = element.getAnnotation(Executes.class);
-            if (executesAnnotation != null) {
-                try {
-                    commandGen.executes(processingEnv, element, executesAnnotation, target, commandGen, type);
-                } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            }
-
-        });
+        //We defer it this way so handleClass can call itself in order to do subclasses!
+        handleClass(type, commandGen, processingEnv, target);
 
 
         //And now we write the class
@@ -94,6 +84,34 @@ public class CommandProcessor {
                     fileOutputStream.flush();
                     fileOutputStream.close();
         
+    }
+
+    private static void handleClass(TypeElement type, CommandGen commandGen, ProcessingEnvironment processingEnv, Target target) {
+        
+        type.getEnclosedElements().forEach((element) -> {
+
+            
+            Require requireAnnotation = element.getAnnotation(Require.class);
+            if (requireAnnotation != null) {
+                try {
+                    commandGen.requires(processingEnv, element, requireAnnotation, target, commandGen, type);
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+
+            Executes executesAnnotation = element.getAnnotation(Executes.class);
+            if (executesAnnotation != null) {
+                try {
+                    commandGen.executes(processingEnv, element, executesAnnotation, target, commandGen, type);
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+
+        });
     }
 
 }

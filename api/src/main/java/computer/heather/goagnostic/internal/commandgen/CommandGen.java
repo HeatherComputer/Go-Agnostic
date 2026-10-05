@@ -15,6 +15,7 @@ import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
 import computer.heather.goagnostic.api.annotations.Command.Executes;
+import computer.heather.goagnostic.api.annotations.Command.Require;
 import computer.heather.goagnostic.api.annotations.Mod;
 import computer.heather.goagnostic.api.annotations.Mod.Target;
 import computer.heather.goagnostic.internal.asm.InstructionParser;
@@ -78,6 +79,8 @@ public abstract class CommandGen {
 
 
     public abstract void executes(ProcessingEnvironment processingEnv, Element element, Executes executesAnnotation, Target target, CommandGen commandGen, TypeElement type) throws IOException;
+
+    public abstract void requires(ProcessingEnvironment processingEnv, Element element, Require requiresAnnotation, Target target, CommandGen commandGen, TypeElement type) throws IOException;
     
 
 

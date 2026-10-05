@@ -13,11 +13,6 @@ public class goagnosticcommandnamecommand {
         stack.register(Commands.literal("goagnosticcommandname"));
     }
 
-
-    public static boolean require(CommandSourceStack source) {
-        return true;
-    }
-
     @SubscribeEvent
     public static void registerCommands(RegisterCommandsEvent event){
         goagnosticcommandnamecommand.register(event.getDispatcher());
