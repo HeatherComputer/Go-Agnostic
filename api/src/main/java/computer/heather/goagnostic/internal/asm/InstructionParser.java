@@ -11,6 +11,7 @@ import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.InvokeDynamicInsnNode;
+import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.TypeInsnNode;
 
@@ -22,6 +23,7 @@ public class InstructionParser {
         PARSERS.put("checkcast", InstructionParser::parseCheckCast);
         PARSERS.put("dup", InstructionParser::parseDup);
         PARSERS.put("new", InstructionParser::parseNew);
+        PARSERS.put("ldc", InstructionParser::parseLdc);
 
         PARSERS.put("invokestatic", (input) -> parseMethod(input, Opcodes.INVOKESTATIC));
         PARSERS.put("invokeinterface", (input) -> parseMethod(input, Opcodes.INVOKEINTERFACE));
@@ -66,6 +68,10 @@ public class InstructionParser {
     /*
     Below are instruction-specific parsers
     */
+
+    public static AbstractInsnNode parseLdc(String input) {
+        return new LdcInsnNode(input);
+    }
 
     public static AbstractInsnNode parseNew(String input) {
         return new TypeInsnNode(Opcodes.NEW, input);

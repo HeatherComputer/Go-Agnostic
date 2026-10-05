@@ -1,0 +1,2 @@
+ldc COMMANDNAME
+invokestatic net/minecraft/commands/Commands literal (Ljava/lang/String;)Lcom/mojang/brigadier/builder/LiteralArgumentBuilder;

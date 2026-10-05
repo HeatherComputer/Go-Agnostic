@@ -62,7 +62,7 @@ public abstract class CommandGen {
             .findFirst()
             .orElse(null);
         
-        System.out.println(methodNode);
+        //System.out.println(methodNode);
 
 
         int index = 0;
@@ -78,9 +78,12 @@ public abstract class CommandGen {
     }
 
 
-    public abstract void executes(ProcessingEnvironment processingEnv, Element element, Executes executesAnnotation, Target target, CommandGen commandGen, TypeElement type) throws IOException;
+    public abstract void executes(ProcessingEnvironment processingEnv, Element element, Executes executesAnnotation, Target target, CommandGen commandGen, TypeElement type, String className) throws IOException;
 
-    public abstract void requires(ProcessingEnvironment processingEnv, Element element, Require requiresAnnotation, Target target, CommandGen commandGen, TypeElement type) throws IOException;
+    public abstract void requires(ProcessingEnvironment processingEnv, Element element, Require requiresAnnotation, Target target, CommandGen commandGen, TypeElement type, String className) throws IOException;
+
+    public abstract void subcommandStart(String name, Target target, CommandGen commandGen, String className) throws IOException;
+    public abstract void subcommandEnd(Target target, CommandGen commandGen, String className) throws IOException;
     
 
 

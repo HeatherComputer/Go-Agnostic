@@ -58,10 +58,46 @@ public class CommandProcessor {
 
         //This is going to be so, so, so cursed.
         CommandGen commandGen = CommandGen.getCommandGen(target);
-        String className = type.getSimpleName().toString();
+        String className = type.getQualifiedName().toString().replace(".", "/");
 
-        //We defer it this way so handleClass can call itself in order to do subclasses!
-        handleClass(type, commandGen, processingEnv, target);
+        //One for the outer, and everything else is inner
+        //Handle requirements before execution, then subcommands after
+        type.getEnclosedElements().forEach((element) -> {
+
+            Require requireAnnotation = element.getAnnotation(Require.class);
+            if (requireAnnotation != null) {
+                try {
+                    commandGen.requires(processingEnv, element, requireAnnotation, target, commandGen, type, className);
+                } catch (IOException e) {
+                    processingEnv.getMessager().printMessage(Kind.ERROR, "GoAgnostic encountered an error: " + e.getMessage(), element);
+                }
+            }
+
+        });
+        type.getEnclosedElements().forEach((element) -> {
+
+            Executes executesAnnotation = element.getAnnotation(Executes.class);
+            if (executesAnnotation != null) {
+                try {
+                    commandGen.executes(processingEnv, element, executesAnnotation, target, commandGen, type, className);
+                } catch (IOException e) {
+                    processingEnv.getMessager().printMessage(Kind.ERROR, "GoAgnostic encountered an error: " + e.getMessage(), element);
+                }
+            }
+        });
+        //One for the outer, and everything else is inner
+        type.getEnclosedElements().forEach((element) -> {
+
+            Command commandAnnotation = element.getAnnotation(Command.class);
+            if (commandAnnotation != null) {
+                try {
+                    handleClass(commandAnnotation, (TypeElement) element, commandGen, processingEnv, target, 1);
+                } catch (IOException e) {
+                    processingEnv.getMessager().printMessage(Kind.ERROR, "GoAgnostic encountered an error: " + e.getMessage(), element);
+                }
+            }
+
+        });
 
 
         //And now we write the class
@@ -86,32 +122,79 @@ public class CommandProcessor {
         
     }
 
-    private static void handleClass(TypeElement type, CommandGen commandGen, ProcessingEnvironment processingEnv, Target target) {
+
+    private static void handleClass(Command command, TypeElement type, CommandGen commandGen, ProcessingEnvironment processingEnv, Target target, int nestLevel) throws IOException {
+
+        processingEnv.getMessager().printMessage(Kind.NOTE, "Nest Level: " + nestLevel);
+        String className;
+
+        if (nestLevel > 0) {
+            className = replaceLastSlashes(type.getQualifiedName().toString().replace(".", "/"), nestLevel);
+            commandGen.subcommandStart(command.name(), target, commandGen, className);
+        }
+        else {
+            className = type.getQualifiedName().toString().replace(".", "/");
+        }
         
         type.getEnclosedElements().forEach((element) -> {
 
-            
             Require requireAnnotation = element.getAnnotation(Require.class);
             if (requireAnnotation != null) {
                 try {
-                    commandGen.requires(processingEnv, element, requireAnnotation, target, commandGen, type);
+                    commandGen.requires(processingEnv, element, requireAnnotation, target, commandGen, type, className);
                 } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            }
-
-            Executes executesAnnotation = element.getAnnotation(Executes.class);
-            if (executesAnnotation != null) {
-                try {
-                    commandGen.executes(processingEnv, element, executesAnnotation, target, commandGen, type);
-                } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    processingEnv.getMessager().printMessage(Kind.ERROR, "GoAgnostic encountered an error: " + e.getMessage(), element);
                 }
             }
 
         });
+        type.getEnclosedElements().forEach((element) -> {
+
+            Executes executesAnnotation = element.getAnnotation(Executes.class);
+            if (executesAnnotation != null) {
+                try {
+                    commandGen.executes(processingEnv, element, executesAnnotation, target, commandGen, type, className);
+                } catch (IOException e) {
+                    processingEnv.getMessager().printMessage(Kind.ERROR, "GoAgnostic encountered an error: " + e.getMessage(), element);
+                }
+            }
+        });
+        //One for the outer, and everything else is inner
+        type.getEnclosedElements().forEach((element) -> {
+
+            Command commandAnnotation = element.getAnnotation(Command.class);
+            if (commandAnnotation != null) {
+                try {
+                    handleClass(commandAnnotation, (TypeElement) element, commandGen, processingEnv, target, nestLevel + 1);
+                } catch (IOException e) {
+                    processingEnv.getMessager().printMessage(Kind.ERROR, "GoAgnostic encountered an error: " + e.getMessage(), element);
+                }
+            }
+
+        });
+        if (nestLevel > 0) {
+            commandGen.subcommandEnd(target, commandGen, className);
+        }
+    }
+
+
+    //Helper stuff
+    public static String replaceLastSlashes(String input, int count) {
+        StringBuilder builder = new StringBuilder(input);
+        int searchFrom = builder.length();
+
+        for (int i = 0; i < count; i++) {
+            int index = builder.lastIndexOf("/", searchFrom - 1);
+
+            if (index == -1) {
+                break;
+            }
+
+            builder.setCharAt(index, '$');
+            searchFrom = index;
+        }
+
+        return builder.toString();
     }
 
 }

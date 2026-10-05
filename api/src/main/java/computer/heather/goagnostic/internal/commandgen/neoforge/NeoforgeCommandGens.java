@@ -30,10 +30,10 @@ public class NeoforgeCommandGens {
 
         @Override
         public void executes(ProcessingEnvironment processingEnv, Element element, Executes executesAnnotation,
-                Target target, CommandGen commandGen, TypeElement type) throws IOException {     
+                Target target, CommandGen commandGen, TypeElement type, String className) throws IOException {     
         
                     
-            String className = type.getQualifiedName().toString().replace(".", "/");
+            //String className = type.getQualifiedName().toString().replace(".", "/");
                 
             String toInject = new String(ProcessorUtils.readAllBytes(CommandProcessor.class.getResourceAsStream("/commandgen/" + target.getImplName() + "/executes")))
                 .replace("EXECUTEOWNER", className)
@@ -48,19 +48,34 @@ public class NeoforgeCommandGens {
 
         @Override
         public void requires(ProcessingEnvironment processingEnv, Element element, Require requiresAnnotation,
-                Target target, CommandGen commandGen, TypeElement type) throws IOException {
+                Target target, CommandGen commandGen, TypeElement type, String className) throws IOException {
 
-            String className = type.getQualifiedName().toString().replace(".", "/");
+            //String className = type.getQualifiedName().toString().replace(".", "/");
                 
             String toInject = new String(ProcessorUtils.readAllBytes(CommandProcessor.class.getResourceAsStream("/commandgen/" + target.getImplName() + "/requires")))
                 .replace("REQUIREOWNER", className)
                 .replace("REQUIREFUNC", element.getSimpleName());
 
 
-            processingEnv.getMessager().printMessage(Kind.WARNING, toInject);
+            //processingEnv.getMessager().printMessage(Kind.WARNING, toInject);
 
             commandGen.injectIntoMethod(count, "register", toInject);
             count += 6;
+        }
+
+        @Override
+        public void subcommandStart(String name, Target target, CommandGen commandGen, String className) throws IOException {
+            String toInject = new String(ProcessorUtils.readAllBytes(CommandProcessor.class.getResourceAsStream("/commandgen/" + target.getImplName() + "/subcommandstart")))
+                .replace("COMMANDNAME", name);
+            commandGen.injectIntoMethod(count, "register", toInject);
+            count += 2;
+        }
+
+        @Override
+        public void subcommandEnd(Target target, CommandGen commandGen, String className) throws IOException {            
+            String toInject = new String(ProcessorUtils.readAllBytes(CommandProcessor.class.getResourceAsStream("/commandgen/" + target.getImplName() + "/subcommandend")));
+            commandGen.injectIntoMethod(count, "register", toInject);
+            count += 2;
         }
 
     }
