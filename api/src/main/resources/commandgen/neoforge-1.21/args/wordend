@@ -1,0 +1,2 @@
+invokevirtual com/mojang/brigadier/builder/LiteralArgumentBuilder then (Lcom/mojang/brigadier/builder/ArgumentBuilder;)Lcom/mojang/brigadier/builder/ArgumentBuilder;
+checkcast com/mojang/brigadier/builder/LiteralArgumentBuilder   

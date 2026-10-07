@@ -1,7 +1,13 @@
 package computer.heather.goagnostic.api.annotations;
 
 import java.lang.annotation.Target;
+
+import computer.heather.goagnostic.api.command.args.ArgumentType;
+
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Repeatable;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 
 
@@ -27,6 +33,27 @@ public @interface Command {
     @Target(ElementType.METHOD)
     public static @interface Require {
 
+    }
+
+    //Runtime retention lets our runtime parsers handle it!
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.METHOD)
+    @Repeatable(value = Arguments.class)
+    public static @interface Argument {
+        //Must be unique, and I think this is how we're doing it? Unsure..
+        String name();
+        ArgumentType type();
+
+        //Unused for most stuff but still just... here, for the sake of where the fuck else should it go
+
+        //int min() default Integer.MIN_VALUE;
+        //int max() default Integer.MAX_VALUE;
+    }
+
+    @Target(ElementType.METHOD)
+    @Retention(RetentionPolicy.RUNTIME)
+    public @interface Arguments {
+        Argument[] value();
     }
 
 }   

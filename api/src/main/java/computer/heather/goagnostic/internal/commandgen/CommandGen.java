@@ -14,6 +14,7 @@ import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
+import computer.heather.goagnostic.api.annotations.Command.Argument;
 import computer.heather.goagnostic.api.annotations.Command.Executes;
 import computer.heather.goagnostic.api.annotations.Command.Require;
 import computer.heather.goagnostic.api.annotations.Mod;
@@ -84,6 +85,9 @@ public abstract class CommandGen {
 
     public abstract void subcommandStart(String name, Target target, CommandGen commandGen, String className) throws IOException;
     public abstract void subcommandEnd(Target target, CommandGen commandGen, String className) throws IOException;
+
+    public abstract void argumentstart(Target target, CommandGen commandGen, Argument argument) throws IOException;
+    public abstract void argumentEnd(Target target, CommandGen commandGen, Argument argument, boolean lastArg) throws IOException;
     
 
 
@@ -102,11 +106,5 @@ public abstract class CommandGen {
     public byte[] getRemappedBytes() {
         classNode.accept(writer);
         return writer.toByteArray();
-    }
-
-    public void executes(ProcessingEnvironment processingEnv, Element element, Executes executesAnnotation,
-            Target target, CommandGen commandGen) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'executes'");
     }
 }
