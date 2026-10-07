@@ -43,7 +43,7 @@ public class TestGoAgnosticCommand {
         @Executes
         @Argument(name="text", type=ArgumentType.GREEDY_STRING)
         public static void run(CommandContext ctx) {
-            ctx.source.sendMessage(Colour.RED + "Hi! This test command works!!");
+            ctx.source.sendMessage(Colour.RED + ctx.getArgument("text"));
         }
 
 
@@ -64,7 +64,7 @@ public class TestGoAgnosticCommand {
         @Executes
         @Argument(name="text", type=ArgumentType.GREEDY_STRING)
         public static void run(CommandContext ctx) {
-            ctx.source.sendMessage(Colour.BLUE + "Hi! This test command works!!");
+            ctx.source.sendMessage(Colour.BLUE + ctx.getArgument("text"));
         }
 
 
