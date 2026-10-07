@@ -101,8 +101,7 @@ public class NeoforgeCommandGens {
 
         @Override
         public void argumentEnd(Target target, CommandGen commandGen, Argument argument, boolean lastArg) throws IOException {
-            String argType = getArgFileFromArgType(argument.type());
-            String toInject = new String(ProcessorUtils.readAllBytes(CommandProcessor.class.getResourceAsStream("/commandgen/" + target.getImplName() + "/args/" + argType + "end")))
+            String toInject = new String(ProcessorUtils.readAllBytes(CommandProcessor.class.getResourceAsStream("/commandgen/" + target.getImplName() + "/args/" + "argend")))
                 .replace("ARGNAME", argument.name());
             if (!lastArg) toInject = toInject.replace("LiteralArgumentBuilder", "RequiredArgumentBuilder");
             injectIntoMethod(count, "register", toInject);
@@ -114,6 +113,7 @@ public class NeoforgeCommandGens {
             switch (type) {
                 case GREEDY_STRING: return "greedystring";
                 case WORD: return "word";
+                case PLAYER: return "player";
             
                 default: return "";
             }

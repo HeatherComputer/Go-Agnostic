@@ -13,12 +13,12 @@ public class Player implements computer.heather.goagnostic.api.util.player.Playe
 
     @Override
     public String getName() {
-        return playerEntity.getName().getString();
+        return playerEntity.getGameProfile().getName();
     }
 
     @Override
     public String getUUID() {
-        return playerEntity.getUUID().toString();
+        return playerEntity.getGameProfile().getId().toString();
     }
 
     @Override

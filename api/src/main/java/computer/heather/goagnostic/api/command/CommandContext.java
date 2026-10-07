@@ -9,9 +9,9 @@ This is the sole thing passed into the execute method of a command. Args can be 
 public class CommandContext {
     
     public final CommandSource source;
-    private final Map<String, ?> args;
+    private final Map<String, Object> args;
 
-    public CommandContext(CommandSource source, Map<String,?> args) {
+    public CommandContext(CommandSource source, Map<String, Object> args) {
         this.source = source;
         this.args = args;
     }

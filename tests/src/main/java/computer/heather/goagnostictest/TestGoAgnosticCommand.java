@@ -71,5 +71,27 @@ public class TestGoAgnosticCommand {
     }
 
 
+    @Command(name = "uuid")
+    public static class UUIDCommand {
+        
+        @Require
+        public static boolean check(CommandContext ctx) {
+            if (ctx.source.isPlayer()) {
+                return !((Player)ctx.source).isCrouching();
+            }
+            return false;
+        }
+
+        @Executes
+        @Argument(name="player", type=ArgumentType.PLAYER)
+        public static void run(CommandContext ctx) {
+            Player player = ctx.getArgument("player");
+            ctx.source.sendMessage(player.getUUID());
+        }
+
+
+    }
+
+
 
 }

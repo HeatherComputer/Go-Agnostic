@@ -14,6 +14,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import computer.heather.goagnostic.api.command.CommandContext;
 
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.arguments.selector.EntitySelector;
 import net.minecraft.server.level.ServerPlayer;
 
 @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -39,7 +40,7 @@ public class CommandHandler implements Command<CommandSourceStack> {
 			Map<String, ParsedArgument> args2 = getArgs(in);
             for (String key : args2.keySet()) {
                 //Convert special arg types - such as players - to their Go!Agnostic comparison
-                args.put(key, convertArgument(args2.get(key).getResult()));
+                args.put(key, convertArgument(args2.get(key).getResult(), source));
             }
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -86,10 +87,11 @@ public class CommandHandler implements Command<CommandSourceStack> {
     }
 
 
-    private static Object convertArgument(Object in) {
+    private static Object convertArgument(Object in, CommandSourceStack source) throws CommandSyntaxException {
         
-        if (in instanceof ServerPlayer) {
-            ServerPlayer player = (ServerPlayer) in;
+        if (in instanceof EntitySelector) {
+            EntitySelector selector = (EntitySelector) in;
+            ServerPlayer player = selector.findSinglePlayer(source);
             return new Player(player);
         }
 
