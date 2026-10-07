@@ -1,0 +1,3 @@
+ldc ARGNAME
+invokestatic com/mojang/brigadier/arguments/StringArgumentType string ()Lcom/mojang/brigadier/arguments/StringArgumentType;
+invokestatic net/minecraft/commands/Commands argument (Ljava/lang/String;Lcom/mojang/brigadier/arguments/ArgumentType;)Lcom/mojang/brigadier/builder/RequiredArgumentBuilder;

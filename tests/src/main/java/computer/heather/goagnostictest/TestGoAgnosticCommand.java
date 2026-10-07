@@ -93,5 +93,38 @@ public class TestGoAgnosticCommand {
     }
 
 
+    @Command(name="all")
+    public static class AllCommand {
+
+        @Executes
+        @Argument(name="player", type=ArgumentType.PLAYER)
+        @Argument (name = "bool", type = ArgumentType.BOOLEAN)
+        @Argument (name = "int", type = ArgumentType.INTEGER)
+        @Argument (name = "word", type = ArgumentType.WORD)
+        @Argument (name = "quote", type = ArgumentType.QUOTABLE_STRING)
+        @Argument (name = "rest", type = ArgumentType.GREEDY_STRING)
+        public static void run(CommandContext ctx) {
+            Player player = ctx.getArgument("player");
+            ctx.source.sendMessage(player.getUUID());
+
+            boolean bool = ctx.getArgument("bool");
+            ctx.source.sendMessage(String.valueOf(bool));
+
+            int integer = ctx.getArgument("int");
+            ctx.source.sendMessage(String.valueOf(integer));
+
+            String word = ctx.getArgument("word");
+            ctx.source.sendMessage(String.valueOf(word));
+
+            String quote = ctx.getArgument("quote");
+            ctx.source.sendMessage(String.valueOf(quote));
+
+            String rest = ctx.getArgument("rest");
+            ctx.source.sendMessage(String.valueOf(rest));
+        }
+
+    }
+
+
 
 }

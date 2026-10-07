@@ -113,7 +113,10 @@ public class NeoforgeCommandGens {
             switch (type) {
                 case GREEDY_STRING: return "greedystring";
                 case WORD: return "word";
+                case QUOTABLE_STRING: return "string";
                 case PLAYER: return "player";
+                case INTEGER: return "integer";
+                case BOOLEAN: return "boolean";
             
                 default: return "";
             }
