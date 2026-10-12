@@ -31,12 +31,25 @@ public class GoAgnosticMod {
 
     private Supplier<Player[]> playerSupplier;
 
+    private static GoAgnosticMod INSTANCE;
 
 
-    public GoAgnosticMod(String modName, String modId, Logger logger) {
+    //Instance shenanigans to let the mod instance be accessible anywhere.
+    //Instance can only ever be set once!
+    public static GoAgnosticMod getInstance() {
+        return INSTANCE;
+    }
+
+    private static void setInstance(GoAgnosticMod instance) throws Exception {
+        if (instance != null) INSTANCE = instance;
+        else throw new Exception("Cannot set GoAgnosticMod instance multiple times!");
+    }
+
+    public GoAgnosticMod(String modName, String modId, Logger logger) throws Exception {
         MOD_NAME = modName;
         MOD_ID = modId;
         LOGGER = logger;
+        setInstance(INSTANCE);
     }
 
     /*
