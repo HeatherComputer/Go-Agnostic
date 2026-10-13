@@ -14,12 +14,14 @@ import org.objectweb.asm.tree.InvokeDynamicInsnNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.TypeInsnNode;
+import org.objectweb.asm.tree.VarInsnNode;
 
 public class InstructionParser {
 
     //A list of keywords and their relevant parsers
     public static final HashMap<String, Function<String, AbstractInsnNode>> PARSERS = new HashMap<String, Function<String, AbstractInsnNode>>();
     static {
+        PARSERS.put("aload", InstructionParser::parseAload);
         PARSERS.put("checkcast", InstructionParser::parseCheckCast);
         PARSERS.put("dup", InstructionParser::parseDup);
         PARSERS.put("new", InstructionParser::parseNew);
@@ -68,6 +70,10 @@ public class InstructionParser {
     /*
     Below are instruction-specific parsers
     */
+
+    public static AbstractInsnNode parseAload(String input) {
+        return new VarInsnNode(Opcodes.ALOAD, Integer.getInteger(input));
+    }
 
     public static AbstractInsnNode parseLdc(String input) {
         return new LdcInsnNode(input);
