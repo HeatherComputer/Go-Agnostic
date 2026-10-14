@@ -42,7 +42,8 @@ public class GoAgnosticMod {
 
     private static void setInstance(GoAgnosticMod instance) throws Exception {
         if (instance != null) INSTANCE = instance;
-        else throw new Exception("Cannot set GoAgnosticMod instance multiple times!");
+        //Disabled for now, POSSIBLY forever
+        //else throw new Exception("Cannot set GoAgnosticMod instance multiple times!");
     }
 
     public GoAgnosticMod(String modName, String modId, Logger logger) throws Exception {
