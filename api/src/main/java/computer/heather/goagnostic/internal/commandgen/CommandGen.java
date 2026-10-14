@@ -8,6 +8,7 @@ import javax.lang.model.element.TypeElement;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.InsnList;
@@ -67,6 +68,11 @@ public abstract class CommandGen {
 
 
         int index = 0;
+        //Allows for injection at the very start, before any instructions
+        if (instructionIndex == 0) {
+            InsnList instructions = InstructionParser.parseInstructionsFromString(toInject);
+            methodNode.instructions.insert(instructions);
+        }
         for (AbstractInsnNode instruction : methodNode.instructions) {
             index++;
             if (index != instructionIndex) continue;
@@ -76,6 +82,17 @@ public abstract class CommandGen {
             
 
         }
+    }
+
+    //Creates an empty method, then you can use injectIntoMethod to inject
+    //For access, see ASM's Opcodes.ACC_PUBLIC and similar
+    //Don't forget to inject returns etc!!
+    public void createMethod(String name) {
+        createMethod(Opcodes.ACC_PUBLIC, name, "()V)");
+    }
+    public void createMethod(int access, String name, String descriptor) {
+        MethodNode methodNode = new MethodNode(access, name, descriptor, null, null);
+        classNode.methods.add(methodNode);
     }
 
 
