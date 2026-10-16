@@ -22,6 +22,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 
 
@@ -86,13 +87,13 @@ public class goagnosticmodid
         goAgnosticMod.onServerStopping();
     }
 
-    @EventHandler 
+    @SubscribeEvent  
     public void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
         Player player = new Player(event.player);
         goAgnosticMod.playerJoin(player);
     }
 
-    @EventHandler 
+    @SubscribeEvent 
     public void onPlayerLeave(PlayerEvent.PlayerLoggedOutEvent event) {
         Player player = new Player(event.player);
         goAgnosticMod.playerLeave(player);
