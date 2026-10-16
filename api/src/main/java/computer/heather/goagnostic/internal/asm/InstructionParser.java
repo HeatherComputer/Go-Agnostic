@@ -27,6 +27,8 @@ public class InstructionParser {
         PARSERS.put("new", InstructionParser::parseNew);
         PARSERS.put("ldc", InstructionParser::parseLdc);
 
+        PARSERS.put("ireturn", InstructionParser::parseIReturn);
+
         PARSERS.put("invokestatic", (input) -> parseMethod(input, Opcodes.INVOKESTATIC));
         PARSERS.put("invokeinterface", (input) -> parseMethod(input, Opcodes.INVOKEINTERFACE));
         PARSERS.put("invokevirtual", (input) -> parseMethod(input, Opcodes.INVOKEVIRTUAL));
@@ -44,7 +46,7 @@ public class InstructionParser {
             String instruction = test.trim();
 
             //This allows for comments. Is that even important?
-            System.out.println(instruction);
+            //System.out.println(instruction);
             if (instruction.isEmpty() || instruction.startsWith("//")) continue;
 
             String[] split = instruction.split(" ", 2);
@@ -72,7 +74,7 @@ public class InstructionParser {
     */
 
     public static AbstractInsnNode parseAload(String input) {
-        return new VarInsnNode(Opcodes.ALOAD, Integer.getInteger(input));
+        return new VarInsnNode(Opcodes.ALOAD, Integer.parseInt(input));
     }
 
     public static AbstractInsnNode parseLdc(String input) {
@@ -85,6 +87,10 @@ public class InstructionParser {
 
     public static AbstractInsnNode parseDup(String ignored) {
         return new InsnNode(Opcodes.DUP);
+    }
+
+    public static AbstractInsnNode parseIReturn(String ignored) {
+        return new InsnNode(Opcodes.IRETURN);
     }
 
     //This handles INVOKEDYNAMIC / INVOKESPECIAL / INVOKEINTERFACE / INVOKEVITUAL the same
@@ -135,7 +141,7 @@ public class InstructionParser {
         //Each part of the instruction is separated by a space. For convenience, we've a lot of variables. We then need to get a Handle for the InvokeDynamicInsnNode we're about to instantiate:
         String[] parts = input.split(" ");
 
-        System.out.println(parts);
+        //System.out.println(parts);
 
         String name = parts[0];
         
