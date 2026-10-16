@@ -50,7 +50,7 @@ public class GoAgnosticMod {
         MOD_NAME = modName;
         MOD_ID = modId;
         LOGGER = logger;
-        setInstance(INSTANCE);
+        setInstance(this);
     }
 
     /*
