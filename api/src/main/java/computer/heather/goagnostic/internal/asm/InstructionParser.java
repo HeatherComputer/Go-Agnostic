@@ -30,7 +30,11 @@ public class InstructionParser {
         PARSERS.put("iconst_0", InstructionParser::parseIconst0);
         PARSERS.put("iconst_1", InstructionParser::parseIconst1);
 
+        PARSERS.put("return", InstructionParser::parseReturn);
         PARSERS.put("ireturn", InstructionParser::parseIReturn);
+
+        PARSERS.put("anewarray", InstructionParser::parseAewArray);
+        PARSERS.put("aastore", InstructionParser::parseAaStore);
 
         PARSERS.put("invokestatic", (input) -> parseMethod(input, Opcodes.INVOKESTATIC));
         PARSERS.put("invokeinterface", (input) -> parseMethod(input, Opcodes.INVOKEINTERFACE));
@@ -100,8 +104,20 @@ public class InstructionParser {
         return new InsnNode(Opcodes.ICONST_1);
     }
 
+    public static AbstractInsnNode parseReturn(String ignored) {
+        return new InsnNode(Opcodes.RETURN);
+    }
+
     public static AbstractInsnNode parseIReturn(String ignored) {
         return new InsnNode(Opcodes.IRETURN);
+    }
+
+    public static AbstractInsnNode parseAewArray(String input) {
+        return new TypeInsnNode(Opcodes.ANEWARRAY, input);
+    }
+
+    public static AbstractInsnNode parseAaStore(String input) {
+        return new InsnNode(Opcodes.AASTORE);
     }
 
     //This handles INVOKEDYNAMIC / INVOKESPECIAL / INVOKEINTERFACE / INVOKEVITUAL the same
