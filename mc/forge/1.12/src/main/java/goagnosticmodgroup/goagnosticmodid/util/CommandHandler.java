@@ -8,6 +8,7 @@ import java.util.function.Function;
 import computer.heather.goagnostic.api.annotations.Command.Argument;
 import computer.heather.goagnostic.api.command.CommandContext;
 import computer.heather.goagnostic.api.util.StringReader.ParseException;
+import computer.heather.goagnostic.api.util.chat.ChatSymbols.Colour;
 import goagnosticmodgroup.goagnosticmodid.goagnosticcommandnamecommand;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
@@ -68,8 +69,8 @@ public class CommandHandler {
             }
             method.invoke(null, ctx);
         } catch (Exception e) {
-            sender.sendMessage(new TextComponentString("An error occured:"));
-            sender.sendMessage(new TextComponentString(e.getMessage()));
+            sender.sendMessage(new TextComponentString(Colour.RED + "An error occured:"));
+            sender.sendMessage(new TextComponentString(Colour.RED + e.getMessage()));
         }
     }
 
