@@ -10,6 +10,7 @@ import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.IntInsnNode;
 import org.objectweb.asm.tree.InvokeDynamicInsnNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
@@ -24,11 +25,12 @@ public class InstructionParser {
         PARSERS.put("aload", InstructionParser::parseAload);
         PARSERS.put("checkcast", InstructionParser::parseCheckCast);
         PARSERS.put("dup", InstructionParser::parseDup);
+        PARSERS.put("pop", InstructionParser::parsePop);
         PARSERS.put("new", InstructionParser::parseNew);
         PARSERS.put("ldc", InstructionParser::parseLdc);
+        PARSERS.put("class", InstructionParser::parseClass);
 
-        PARSERS.put("iconst_0", InstructionParser::parseIconst0);
-        PARSERS.put("iconst_1", InstructionParser::parseIconst1);
+        PARSERS.put("iconst", InstructionParser::parseIconst);
 
         PARSERS.put("return", InstructionParser::parseReturn);
         PARSERS.put("ireturn", InstructionParser::parseIReturn);
@@ -88,6 +90,10 @@ public class InstructionParser {
         return new LdcInsnNode(input);
     }
 
+    public static AbstractInsnNode parseClass(String input) {
+        return new LdcInsnNode(Type.getType(input));
+    }
+
     public static AbstractInsnNode parseNew(String input) {
         return new TypeInsnNode(Opcodes.NEW, input);
     }
@@ -96,12 +102,13 @@ public class InstructionParser {
         return new InsnNode(Opcodes.DUP);
     }
 
-    public static AbstractInsnNode parseIconst0(String ignored) {
-        return new InsnNode(Opcodes.ICONST_0);
+    public static AbstractInsnNode parsePop(String ignored) {
+        return new InsnNode(Opcodes.POP);
     }
 
-    public static AbstractInsnNode parseIconst1(String ignored) {
-        return new InsnNode(Opcodes.ICONST_1);
+    public static AbstractInsnNode parseIconst(String input) {
+        int val = Integer.parseInt(input);
+        return new IntInsnNode(Opcodes.BIPUSH, val);
     }
 
     public static AbstractInsnNode parseReturn(String ignored) {
