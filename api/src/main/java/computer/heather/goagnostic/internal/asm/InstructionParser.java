@@ -27,6 +27,9 @@ public class InstructionParser {
         PARSERS.put("new", InstructionParser::parseNew);
         PARSERS.put("ldc", InstructionParser::parseLdc);
 
+        PARSERS.put("iconst_0", InstructionParser::parseIconst0);
+        PARSERS.put("iconst_1", InstructionParser::parseIconst1);
+
         PARSERS.put("ireturn", InstructionParser::parseIReturn);
 
         PARSERS.put("invokestatic", (input) -> parseMethod(input, Opcodes.INVOKESTATIC));
@@ -87,6 +90,14 @@ public class InstructionParser {
 
     public static AbstractInsnNode parseDup(String ignored) {
         return new InsnNode(Opcodes.DUP);
+    }
+
+    public static AbstractInsnNode parseIconst0(String ignored) {
+        return new InsnNode(Opcodes.ICONST_0);
+    }
+
+    public static AbstractInsnNode parseIconst1(String ignored) {
+        return new InsnNode(Opcodes.ICONST_1);
     }
 
     public static AbstractInsnNode parseIReturn(String ignored) {
