@@ -30,6 +30,7 @@ public class ProcessorBase extends AbstractProcessor {
 
 
 
+    //This is for ALL versions. Mod.Target has a method for target-specific classes!
     public static final String[] otherClasses = new String[] {
         "/util/Player",
         "/util/chat/ChatHandler",
@@ -105,6 +106,25 @@ public class ProcessorBase extends AbstractProcessor {
                 File outputDir = new File(buildDir, "goagnostic/" + target.getImplName());
                 
                 for (String className : otherClasses) {
+
+
+                    processingEnv.getMessager().printMessage(Kind.OTHER, target.getImplName() + className);
+                    byte[] remapped = ProcessorUtils.remapFile(ModProcessor.class.getResourceAsStream("/templates/GoAgnosticTemplate-" + target.getImplName() + "/goagnosticmodgroup/goagnosticmodid" + className + ".class.bin"), 
+                        mod, ((TypeElement) modElement).getQualifiedName().toString());
+                    
+                    File outputFile = new File(outputDir, StringUtils.lowerWithSlashes(mod
+                        .group() + "." + mod.modid() + ".") + className + ".class");
+                        
+                    if (!outputFile.getParentFile().exists()) outputFile.getParentFile().mkdirs();
+                        
+                    FileOutputStream fileOutputStream = new FileOutputStream(outputFile);
+                    fileOutputStream.write(remapped);
+                    fileOutputStream.flush();
+                    fileOutputStream.close();
+
+                }
+                
+                for (String className : target.getExtraTargets()) {
 
 
                     processingEnv.getMessager().printMessage(Kind.OTHER, target.getImplName() + className);

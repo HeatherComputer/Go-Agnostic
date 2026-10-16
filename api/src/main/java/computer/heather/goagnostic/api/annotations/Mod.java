@@ -51,6 +51,13 @@ public @interface Mod {
                     
             }
         }
+
+        public String[] getExtraTargets() {
+            switch (this) {
+                case FORGE_1_12: return new String[]{"/util/GACommandBase"};
+                default : return new String[] {};
+            }
+        }
     }
 
 
