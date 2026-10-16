@@ -3,9 +3,12 @@ buildscript {
         // These repositories are only for Gradle plugins, put any other repositories in the repository block further below
         mavenCentral()
         gradlePluginPortal()
+        maven {
+            url = 'https://maven.heather.computer/public-snapshot'
+        }
     }
     dependencies {
-        classpath files('../api/build/libs/Go!Agnostic.jar')
+        classpath 'computer.heather.goagnostic:api:BLEEDINGEDGE-SNAPSHOT'
     }
 }
 
@@ -33,13 +36,16 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 
 repositories {
-    // These repositories are only for Gradle plugins, put any other repositories in the repository block further below
+
     mavenCentral()
+        maven {
+        url = 'https://maven.heather.computer/public-snapshot'
+    }
 }
 
 dependencies {
-    annotationProcessor files('../api/build/libs/Go!Agnostic.jar')
-    implementation files('../api/build/libs/Go!Agnostic.jar')
+    annotationProcessor 'computer.heather.goagnostic:api:BLEEDINGEDGE-SNAPSHOT'
+    implementation 'computer.heather.goagnostic:api:BLEEDINGEDGE-SNAPSHOT'
 }
 
 // Example for how to get properties into the manifest for reading at runtime.

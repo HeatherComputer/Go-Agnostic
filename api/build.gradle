@@ -77,7 +77,7 @@ processResources {
 }
 
 
-version = ''
+version = findProperty('publishVersion') ?: '0.1'
 group = 'computer.heather.goagnostic' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "Go!Agnostic"
 
@@ -119,4 +119,37 @@ jar {
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+}
+
+
+
+
+publishing {
+    repositories {
+        maven {
+            name = 'target'
+
+            url = uri(
+                findProperty('publishBleedingedge') == 'true'
+                    ? 'https://maven.heather.computer/public-snapshot'
+                    : 'https://maven.heather.computer/public'
+            )
+            credentials {
+                username = findProperty('heatherMavenUsername')
+                password = findProperty('heatherMavenPassword')
+            }
+        }
+    }
+}
+
+tasks.register('publishBleedingedge', GradleBuild) {
+    group = 'publishing'
+    description = 'Publishes the BLEEDINGEDGE version to the snapshot repository'
+
+    tasks = ['publish']
+
+    startParameter.projectProperties.putAll([
+        publishVersion: 'BLEEDINGEDGE-SNAPSHOT',
+        publishBleedingedge: 'true'
+    ])
 }
