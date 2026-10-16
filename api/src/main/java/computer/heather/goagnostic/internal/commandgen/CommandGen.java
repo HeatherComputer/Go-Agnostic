@@ -12,7 +12,6 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.InsnList;
-import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
 import computer.heather.goagnostic.api.annotations.Command.Argument;
@@ -21,6 +20,7 @@ import computer.heather.goagnostic.api.annotations.Command.Require;
 import computer.heather.goagnostic.api.annotations.Mod;
 import computer.heather.goagnostic.api.annotations.Mod.Target;
 import computer.heather.goagnostic.internal.asm.InstructionParser;
+import computer.heather.goagnostic.internal.commandgen.forge.ForgeCommandGens;
 import computer.heather.goagnostic.internal.commandgen.neoforge.NeoforgeCommandGens;
 
 
@@ -74,13 +74,12 @@ public abstract class CommandGen {
             methodNode.instructions.insert(instructions);
         }
         for (AbstractInsnNode instruction : methodNode.instructions) {
+            if (instruction.getOpcode() < 0) continue;
             index++;
             if (index != instructionIndex) continue;
 
             InsnList instructions = InstructionParser.parseInstructionsFromString(toInject);
             methodNode.instructions.insert(instruction, instructions);
-            
-
         }
     }
 
@@ -92,6 +91,9 @@ public abstract class CommandGen {
     }
     public void createMethod(int access, String name, String descriptor) {
         MethodNode methodNode = new MethodNode(access, name, descriptor, null, null);
+        for (MethodNode node : classNode.methods) {
+            if (node.name.equals(methodNode.name) && node.desc.equals(methodNode.desc)) return;
+        }
         classNode.methods.add(methodNode);
     }
 
@@ -105,6 +107,8 @@ public abstract class CommandGen {
 
     public abstract void argumentstart(Target target, CommandGen commandGen, Argument argument) throws IOException;
     public abstract void argumentEnd(Target target, CommandGen commandGen, Argument argument, boolean lastArg) throws IOException;
+
+    public void finalise(Target target, String className) {}
     
 
 
@@ -113,6 +117,9 @@ public abstract class CommandGen {
 
             case NEO_1_21:
                 return new NeoforgeCommandGens.NEO_1_21(target.getImplName());
+            
+            case FORGE_1_12:
+                return new ForgeCommandGens.FORGE_1_12(target.getImplName());
 
             default:
                 throw new IllegalArgumentException("Unknown target: " + target.getImplName());
@@ -123,5 +130,67 @@ public abstract class CommandGen {
     public byte[] getRemappedBytes() {
         classNode.accept(writer);
         return writer.toByteArray();
+    }
+
+
+    //A completely dummy commandgen!
+    public static class DUMMY extends CommandGen {
+
+        public DUMMY(byte[] originalClassBytes) {
+            super(originalClassBytes);
+        }
+
+        public byte[] getRemappedBytes() {
+            for (MethodNode methodNode : classNode.methods) {
+                if(methodNode.name.equals("getCommands")) {
+                    for (AbstractInsnNode insnNode : methodNode.instructions) {
+                        System.out.println(insnNode);
+                    }
+                }
+            }
+            classNode.accept(writer);
+            return writer.toByteArray();
+        }
+
+        @Override
+        public void executes(ProcessingEnvironment processingEnv, Element element, Executes executesAnnotation,
+                Target target, CommandGen commandGen, TypeElement type, String className) throws IOException {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'executes'");
+        }
+
+        @Override
+        public void requires(ProcessingEnvironment processingEnv, Element element, Require requiresAnnotation,
+                Target target, CommandGen commandGen, TypeElement type, String className) throws IOException {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'requires'");
+        }
+
+        @Override
+        public void subcommandStart(String name, Target target, CommandGen commandGen, String className)
+                throws IOException {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'subcommandStart'");
+        }
+
+        @Override
+        public void subcommandEnd(Target target, CommandGen commandGen, String className) throws IOException {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'subcommandEnd'");
+        }
+
+        @Override
+        public void argumentstart(Target target, CommandGen commandGen, Argument argument) throws IOException {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'argumentstart'");
+        }
+
+        @Override
+        public void argumentEnd(Target target, CommandGen commandGen, Argument argument, boolean lastArg)
+                throws IOException {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'argumentEnd'");
+        }
+        
     }
 }
