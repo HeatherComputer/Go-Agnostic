@@ -140,18 +140,6 @@ public abstract class CommandGen {
             super(originalClassBytes);
         }
 
-        public byte[] getRemappedBytes() {
-            for (MethodNode methodNode : classNode.methods) {
-                if(methodNode.name.equals("getCommands")) {
-                    for (AbstractInsnNode insnNode : methodNode.instructions) {
-                        System.out.println(insnNode);
-                    }
-                }
-            }
-            classNode.accept(writer);
-            return writer.toByteArray();
-        }
-
         @Override
         public void executes(ProcessingEnvironment processingEnv, Element element, Executes executesAnnotation,
                 Target target, CommandGen commandGen, TypeElement type, String className) throws IOException {

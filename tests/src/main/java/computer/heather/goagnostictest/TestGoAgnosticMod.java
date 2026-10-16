@@ -22,7 +22,7 @@ public class TestGoAgnosticMod extends GoAgnosticMod {
 
 
 
-    public TestGoAgnosticMod(String modName, String modId, GoAgnosticMod.Logger logger) {
+    public TestGoAgnosticMod(String modName, String modId, GoAgnosticMod.Logger logger) throws Exception {
         super(modName, modId, logger);
         ChatManager.setChatListener(this::onChat);
     }

@@ -1,0 +1,14 @@
+aload 1
+aload 2
+aload 3
+class LEXECUTEOWNER;
+ldc EXECUTEFUNC
+iconst 1 
+anewarray java/lang/Class
+dup 
+iconst 0 
+ldc Lcomputer/heather/goagnostic/api/command/CommandContext;
+aastore 
+invokevirtual java/lang/Class getMethod (Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;
+invokestatic goagnosticmodgroup/goagnosticmodid/util/CommandHandler execute (Lnet/minecraft/server/MinecraftServer;Lnet/minecraft/command/ICommandSender;[Ljava/lang/String;Ljava/lang/reflect/Method;)V
+return 

@@ -1,0 +1,5 @@
+aload 1
+aload 2
+lambda apply ()Ljava/util/function/Function; (Ljava/lang/Object;)Ljava/lang/Object; invokestatic REQUIREOWNER REQUIREFUNC (Lcomputer/heather/goagnostic/api/command/CommandContext;)Z (Lcomputer/heather/goagnostic/api/command/CommandContext;)Ljava/lang/Boolean;
+invokestatic goagnosticmodgroup/goagnosticmodid/util/CommandHandler$RequireChecker checkPermission (Lnet/minecraft/server/MinecraftServer;Lnet/minecraft/command/ICommandSender;Ljava/util/function/Function;)Z
+ireturn

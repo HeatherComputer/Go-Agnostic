@@ -32,9 +32,6 @@ public class CommandProcessor {
 
         if (!(commandElement instanceof TypeElement)) return;
 
-        //temp
-        if (target != Target.NEO_1_21) return;
-
         //Checks to perform!
         TypeElement type = (TypeElement) commandElement;
 
@@ -50,7 +47,7 @@ public class CommandProcessor {
             }
 
         }
-        processingEnv.getMessager().printMessage(Kind.NOTE, "Processing command: " + type.getQualifiedName(), type);
+        processingEnv.getMessager().printMessage(Kind.NOTE, "Processing command: " + type.getSimpleName() + " on target: " + target, type);
 
         //Now, we process the command. We prepare the start, and then work inwards. Subcommands, executes etc
         //but for this quick test we just need start and end really
@@ -100,6 +97,8 @@ public class CommandProcessor {
         });
 
 
+        //Call finalise.
+        commandGen.finalise(target, StringUtils.lowerWithSlashes(mod.group() + "." + mod.modid() + ".") + command.name() + "command.class");
         //And now we write the class
         
         File buildDir = ProcessorUtils.getBuildDir(processingEnv);

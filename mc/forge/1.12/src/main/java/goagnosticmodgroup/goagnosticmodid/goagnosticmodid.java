@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Logger;
 
 import computer.heather.goagnostic.api.baseclasses.GoAgnosticMod;
 import computer.heather.goagnostic.api.util.placeholders.GoAgnosticModPlaceholder;
+import goagnosticmodgroup.goagnosticmodid.util.CommandHandler;
 import goagnosticmodgroup.goagnosticmodid.util.Player;
 import goagnosticmodgroup.goagnosticmodid.util.chat.ChatHandler;
 import net.minecraft.entity.player.EntityPlayer;
@@ -67,8 +68,9 @@ public class goagnosticmodid
     }
 
     @EventHandler
-    public void onServerStarting(FMLServerStartingEvent event)
+    public void onServerStarting(FMLServerStartingEvent event) throws InstantiationException, IllegalAccessException
     {
+        CommandHandler.Registrar.registerCommands(event);
         server = event.getServer();
         goAgnosticMod.onServerStarting();
         

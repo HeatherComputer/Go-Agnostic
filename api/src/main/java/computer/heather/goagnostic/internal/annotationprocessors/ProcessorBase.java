@@ -6,7 +6,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.RoundEnvironment;
@@ -39,6 +44,14 @@ public class ProcessorBase extends AbstractProcessor {
         "/util/CommandHandler$RequireChecker"
     };
 
+
+    //Initially implemented so the 1.12 command processor can add additional stuff after everything's done and dusted. May be useful elsewhere.
+    private static final Map<String, BiConsumer<File, Mod>> finaliseTasks = new HashMap<>();
+
+    //No duplicates!
+    public static void addFinaliseTask(String name, BiConsumer<File, Mod> task) {
+        finaliseTasks.putIfAbsent(name, task);
+    }
 
 
 
@@ -200,6 +213,17 @@ public class ProcessorBase extends AbstractProcessor {
             processingEnv.getMessager().printMessage(Kind.ERROR, "GoAgnostic encountered an error: " + e.getMessage(), modElement);
         }
 
+        //And finalise stuff!
+        for (BiConsumer<File, Mod> task : finaliseTasks.values()) {
+            File buildDir;
+            try {
+                buildDir = ProcessorUtils.getBuildDir(processingEnv);
+                task.accept(buildDir, mod);
+            } catch (IOException e) {
+                processingEnv.getMessager().printMessage(Kind.ERROR, "GoAgnostic encountered an error: " + e.getMessage(), modElement);
+                break;
+            }
+        }
 
         return false;
     }
