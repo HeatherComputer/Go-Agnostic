@@ -36,6 +36,8 @@ public class CommandContext {
         ArrayList<Object> parsedArgs = new ArrayList<>();
 
         for (Argument argument : arguments) {
+            reader.skipWhitespace();
+            if (!reader.canRead()) break;
             parsedArgs.add(argument.type().parse(reader));
         }
 
