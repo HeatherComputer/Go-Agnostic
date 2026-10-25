@@ -44,14 +44,15 @@ public class ForgeCommandGens {
                 Target target, CommandGen commandGen, TypeElement type, String className) throws IOException {
 
             //Create the method
-            createMethod(Opcodes.ACC_PUBLIC, "func_184881_a", "(Lnet/minecraft/server/MinecraftServer;Lnet/minecraft/command/ICommandSender;[Ljava/lang/String;)V");
+            //We use a custom execute method that gets called by the super class
+            createMethod(Opcodes.ACC_PUBLIC, "gaexecute", "(Lnet/minecraft/server/MinecraftServer;Lnet/minecraft/command/ICommandSender;[Ljava/lang/String;)V");
 
             //Then inject into it
             String toInject = new String(ProcessorUtils.readAllBytes(CommandProcessor.class.getResourceAsStream("/commandgen/" + target.getImplName() + "/executes")))
                 .replace("EXECUTEOWNER", className)
                 .replace("EXECUTEFUNC", element.getSimpleName());
                 
-            injectIntoMethod(0, "func_184881_a", toInject);
+            injectIntoMethod(0, "gaexecute", toInject);
         }
 
         @Override
@@ -93,7 +94,7 @@ public class ForgeCommandGens {
         public void finalise(Target target, String className) {
             generatedClasses.add(className);
 
-            ProcessorBase.addFinaliseTask(className, this::finaliseTask);
+            ProcessorBase.addFinaliseTask(target.getImplName() + "cmdfinalise", this::finaliseTask);
 
         }
 
