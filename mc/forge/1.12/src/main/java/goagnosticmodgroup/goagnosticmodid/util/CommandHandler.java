@@ -9,7 +9,6 @@ import computer.heather.goagnostic.api.annotations.Command.Argument;
 import computer.heather.goagnostic.api.command.CommandContext;
 import computer.heather.goagnostic.api.util.StringReader.ParseException;
 import computer.heather.goagnostic.api.util.chat.ChatSymbols.Colour;
-import goagnosticmodgroup.goagnosticmodid.goagnosticcommandnamecommand;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;

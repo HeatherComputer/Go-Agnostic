@@ -2,12 +2,11 @@ package goagnosticmodgroup.goagnosticmodid;
 
 import goagnosticmodgroup.goagnosticmodid.util.GACommandBase;
 
-public class goagnosticcommandnamecommand extends GACommandBase {
+public class goagnosticcommandclassnamecommand extends GACommandBase {
 
-    public goagnosticcommandnamecommand()
+    public goagnosticcommandclassnamecommand()
     {
-        System.out.println("REGISTERING");
-        //addSubcommand(new Start());
+        
     }
     
     @Override
