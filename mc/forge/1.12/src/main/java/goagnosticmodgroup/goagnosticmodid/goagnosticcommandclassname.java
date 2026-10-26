@@ -2,9 +2,9 @@ package goagnosticmodgroup.goagnosticmodid;
 
 import goagnosticmodgroup.goagnosticmodid.util.GACommandBase;
 
-public class goagnosticcommandclassnamecommand extends GACommandBase {
+public class goagnosticcommandclassname extends GACommandBase {
 
-    public goagnosticcommandclassnamecommand()
+    public goagnosticcommandclassname()
     {
         
     }

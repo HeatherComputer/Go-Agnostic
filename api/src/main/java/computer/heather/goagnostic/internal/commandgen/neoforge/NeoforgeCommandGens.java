@@ -10,6 +10,7 @@ import javax.tools.Diagnostic.Kind;
 import computer.heather.goagnostic.api.annotations.Command.Argument;
 import computer.heather.goagnostic.api.annotations.Command.Executes;
 import computer.heather.goagnostic.api.annotations.Command.Require;
+import computer.heather.goagnostic.api.annotations.Mod;
 import computer.heather.goagnostic.api.annotations.Mod.Target;
 import computer.heather.goagnostic.api.command.args.ArgumentType;
 import computer.heather.goagnostic.internal.annotationprocessors.CommandProcessor;
@@ -84,7 +85,7 @@ public class NeoforgeCommandGens {
         }
 
         @Override
-        public void subcommandEnd(Target target, CommandGen commandGen, String className) throws IOException {            
+        public void subcommandEnd(String name, Target target, CommandGen commandGen, String className, Mod mod, ProcessingEnvironment processingEnv) throws IOException {            
             String toInject = new String(ProcessorUtils.readAllBytes(CommandProcessor.class.getResourceAsStream("/commandgen/" + target.getImplName() + "/subcommandend")));
             injectIntoMethod(count, "register", toInject);
             count += 2;

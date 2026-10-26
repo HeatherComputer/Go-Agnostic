@@ -103,7 +103,7 @@ public abstract class CommandGen {
     public abstract void requires(ProcessingEnvironment processingEnv, Element element, Require requiresAnnotation, Target target, CommandGen commandGen, TypeElement type, String className) throws IOException;
 
     public abstract void subcommandStart(String name, Target target, CommandGen commandGen, String className) throws IOException;
-    public abstract void subcommandEnd(Target target, CommandGen commandGen, String className) throws IOException;
+    public abstract void subcommandEnd(String name, Target target, CommandGen commandGen, String className, Mod mod, ProcessingEnvironment processingEnv) throws IOException;
 
     public abstract void argumentstart(Target target, CommandGen commandGen, Argument argument) throws IOException;
     public abstract void argumentEnd(Target target, CommandGen commandGen, Argument argument, boolean lastArg) throws IOException;
@@ -112,14 +112,14 @@ public abstract class CommandGen {
     
 
 
-    public static CommandGen getCommandGen(Mod.Target target) throws IOException {
+    public static CommandGen getCommandGen(Mod.Target target, String qualifiedName) throws IOException {
         switch (target) {
 
             case NEO_1_21:
                 return new NeoforgeCommandGens.NEO_1_21(target.getImplName());
             
             case FORGE_1_12:
-                return new ForgeCommandGens.FORGE_1_12(target.getImplName());
+                return new ForgeCommandGens.FORGE_1_12(target.getImplName(), qualifiedName);
 
             default:
                 throw new IllegalArgumentException("Unknown target: " + target.getImplName());
@@ -162,7 +162,7 @@ public abstract class CommandGen {
         }
 
         @Override
-        public void subcommandEnd(Target target, CommandGen commandGen, String className) throws IOException {
+        public void subcommandEnd(String name, Target target, CommandGen commandGen, String className, Mod mod, ProcessingEnvironment processingEnv) throws IOException {
             // TODO Auto-generated method stub
             throw new UnsupportedOperationException("Unimplemented method 'subcommandEnd'");
         }

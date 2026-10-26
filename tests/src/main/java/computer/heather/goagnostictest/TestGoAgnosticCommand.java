@@ -53,4 +53,27 @@ public class TestGoAgnosticCommand {
     }
 
 
+    @Command(name = "red") 
+    public static class Red {
+
+        @Require
+        public static boolean check(CommandContext ctx) {
+            if (ctx.source.isPlayer()) {
+                return !((Player)ctx.source).isCrouching();
+            }
+            return false;
+        }
+
+
+        @Executes
+        @Argument (name = "rest", type = ArgumentType.GREEDY_STRING)
+        public static void run(CommandContext ctx) {
+            String rest = ctx.getArgument("rest");
+            ctx.source.sendMessage(String.valueOf(rest));
+        }
+
+
+    }
+
+
 }

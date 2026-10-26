@@ -30,18 +30,28 @@ public class ForgeCommandGens {
 
         public static final List<String> generatedClasses = new ArrayList<String>();
         private final String implName;
+        private final String qualifiedName;
+        private FORGE_1_12 subCommand;
+        private String subCommandName;
+        private int nest = 0;
 
-        public FORGE_1_12(String implName) throws IOException {
+        public FORGE_1_12(String implName, String qualifiedName) throws IOException {
             super(
-                ProcessorUtils.readAllBytes(FORGE_1_12.class.getResourceAsStream("/templates/GoAgnosticTemplate-" + implName + "/goagnosticmodgroup/goagnosticmodid/goagnosticcommandnamecommand.class.bin"))
+                ProcessorUtils.readAllBytes(FORGE_1_12.class.getResourceAsStream("/templates/GoAgnosticTemplate-" + implName + "/goagnosticmodgroup/goagnosticmodid/goagnosticcommandclassname.class.bin"))
             );
             this.implName = implName;
-            //TODO Auto-generated constructor stub
+            this.qualifiedName = qualifiedName;
         }
 
         @Override
         public void executes(ProcessingEnvironment processingEnv, Element element, Executes executesAnnotation,
                 Target target, CommandGen commandGen, TypeElement type, String className) throws IOException {
+                
+            if (nest >= 1) {
+                //If we're currently processing a subcommand we'll pass it onto that
+                subCommand.executes(processingEnv, element, executesAnnotation, target, commandGen, type, className);
+                return;
+            }
 
             //Create the method
             //We use a custom execute method that gets called by the super class
@@ -59,6 +69,12 @@ public class ForgeCommandGens {
         public void requires(ProcessingEnvironment processingEnv, Element element, Require requiresAnnotation,
                 Target target, CommandGen commandGen, TypeElement type, String className) throws IOException {
 
+            if (nest >= 1) {
+                //If we're currently processing a subcommand we'll pass it onto that
+                subCommand.requires(processingEnv, element, requiresAnnotation, target, commandGen, type, className);
+                return;
+            }
+
             //Create the method
             createMethod(Opcodes.ACC_PUBLIC, "func_184882_a", "(Lnet/minecraft/server/MinecraftServer;Lnet/minecraft/command/ICommandSender;)Z");
 
@@ -70,16 +86,65 @@ public class ForgeCommandGens {
             injectIntoMethod(0, "func_184882_a", toInject);
         }
 
-        //1.12 inherently doesn't really support these. We'll still support them when parsing but we can't integrate them with actual commands, instead we have to parse arguments at command execution time
-        //So all of these are just.. nothing
         @Override
         public void subcommandStart(String name, Target target, CommandGen commandGen, String className)
                 throws IOException {
+
+            //Increase our nest level
+            nest++;
+
+            if (nest <= 1) {
+                //Not currently processing a subcommand
+                subCommandName = qualifiedName + "$" + name + "command";
+                subCommand = new FORGE_1_12(implName, subCommandName);
+            }
+            //Or, we are processing a subcommand and IT gets this subcommand
+            else {
+                subCommand.subcommandStart(name, target, commandGen, className);
+            }
+
         }
 
         @Override
-        public void subcommandEnd(Target target, CommandGen commandGen, String className) throws IOException {
+        public void subcommandEnd(String name, Target target, CommandGen commandGen, String className, Mod mod, ProcessingEnvironment processingEnv) throws IOException {
+            //Nest level is only 1 if our current subcommand has zero subcommands
+            if (nest == 1) {
+                String toInject = new String(ProcessorUtils.readAllBytes(CommandProcessor.class.getResourceAsStream("/commandgen/" + target.getImplName() + "/subcommand")))
+                    .replace("SUBCOMMANDNAME", subCommandName);
+                injectIntoMethod(2, "<init>", toInject);
+
+
+
+                File buildDir = ProcessorUtils.getBuildDir(processingEnv);
+                File outputDir = new File(buildDir, "goagnostic/" + target.getImplName());
+
+                HashMap<String, String> map = new HashMap<>();
+                map.put("goagnosticcommandname", name);
+                
+                String commandClassName = subCommandName.replace(StringUtils.lowerWithSlashes(mod
+                        .group() + "." + mod.modid() + "."), "");
+                map.put("goagnosticcommandclassname", commandClassName);
+                
+                byte[] remapped = ProcessorUtils.remapFile(subCommand.getRemappedBytes(), mod, "", map);
+
+                File outputFile = new File(outputDir, qualifiedName + "$" + name + "command.class");
+                        
+                if (!outputFile.getParentFile().exists()) outputFile.getParentFile().mkdirs();
+                    
+                FileOutputStream fileOutputStream = new FileOutputStream(outputFile);
+                fileOutputStream.write(remapped);
+                fileOutputStream.flush();
+                fileOutputStream.close();
+
+            }
+            else {
+                subCommand.subcommandEnd(name, target, commandGen, className, mod, processingEnv);
+            }
+            nest--;
         }
+
+        //1.12 inherently doesn't really support these. We'll still support them when parsing but we can't integrate them with actual commands, instead we have to parse arguments at command execution time
+        //So all of these are just.. nothing
 
         @Override
         public void argumentstart(Target target, CommandGen commandGen, Argument argument) throws IOException {

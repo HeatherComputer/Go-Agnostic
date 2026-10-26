@@ -54,7 +54,7 @@ public class CommandProcessor {
         //logic to be reproduced in other methods for subcommands and executes etc
 
         //This is going to be so, so, so cursed.
-        CommandGen commandGen = CommandGen.getCommandGen(target);
+        CommandGen commandGen = CommandGen.getCommandGen(target, StringUtils.lowerWithSlashes(mod.group() + "." + mod.modid() + ".") + command.name() + "command");
         String className = type.getQualifiedName().toString().replace(".", "/");
 
         //One for the outer, and everything else is inner
@@ -88,7 +88,7 @@ public class CommandProcessor {
             Command commandAnnotation = element.getAnnotation(Command.class);
             if (commandAnnotation != null) {
                 try {
-                    handleClass(commandAnnotation, (TypeElement) element, commandGen, processingEnv, target, 1);
+                    handleClass(commandAnnotation, (TypeElement) element, commandGen, processingEnv, target, 1, mod);
                 } catch (IOException e) {
                     processingEnv.getMessager().printMessage(Kind.ERROR, "GoAgnostic encountered an error: " + e.getMessage(), element);
                 }
@@ -106,6 +106,8 @@ public class CommandProcessor {
 
         HashMap<String, String> map = new HashMap<>();
         map.put("goagnosticcommandname", command.name());
+        //1.12 requires this to be separate, maybe other versions will too
+        map.put("goagnosticcommandclassname", command.name() + "command");
         
         byte[] remapped = ProcessorUtils.remapFile(commandGen.getRemappedBytes(), mod, ((TypeElement) commandElement).getQualifiedName().toString(), map);
 
@@ -122,7 +124,7 @@ public class CommandProcessor {
     }
 
 
-    private static void handleClass(Command command, TypeElement type, CommandGen commandGen, ProcessingEnvironment processingEnv, Target target, int nestLevel) throws IOException {
+    private static void handleClass(Command command, TypeElement type, CommandGen commandGen, ProcessingEnvironment processingEnv, Target target, int nestLevel, Mod mod) throws IOException {
 
         processingEnv.getMessager().printMessage(Kind.NOTE, "Nest Level: " + nestLevel);
         String className;
@@ -164,7 +166,7 @@ public class CommandProcessor {
             Command commandAnnotation = element.getAnnotation(Command.class);
             if (commandAnnotation != null) {
                 try {
-                    handleClass(commandAnnotation, (TypeElement) element, commandGen, processingEnv, target, nestLevel + 1);
+                    handleClass(commandAnnotation, (TypeElement) element, commandGen, processingEnv, target, nestLevel + 1, mod);
                 } catch (IOException e) {
                     processingEnv.getMessager().printMessage(Kind.ERROR, "GoAgnostic encountered an error: " + e.getMessage(), element);
                 }
@@ -172,7 +174,7 @@ public class CommandProcessor {
 
         });
         if (nestLevel > 0) {
-            commandGen.subcommandEnd(target, commandGen, className);
+            commandGen.subcommandEnd(command.name(), target, commandGen, className, mod, processingEnv);
         }
     }
 
