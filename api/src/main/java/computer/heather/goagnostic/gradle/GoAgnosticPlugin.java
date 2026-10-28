@@ -29,6 +29,7 @@ import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.TaskProvider;
 import org.gradle.jvm.tasks.Jar;
 
+import computer.heather.goagnostic.gradle.GoAgnosticPlugin.GoAgnosticTask;
 import computer.heather.goagnostic.internal.util.ProcessorUtils;
 
 public class GoAgnosticPlugin implements Plugin<Project> {
@@ -46,7 +47,6 @@ public class GoAgnosticPlugin implements Plugin<Project> {
 
         TaskProvider<GoAgnosticTask> customTask = target.getTasks().register(
             "GoAgnosticFinalise", GoAgnosticTask.class, task -> {
-                task.dependsOn(jarTask);
 
                 task.getInputJar().set(
                     jarTask.flatMap(Jar::getArchiveFile)
@@ -56,6 +56,34 @@ public class GoAgnosticPlugin implements Plugin<Project> {
                 );
             }
         );
+
+        //Shadow support!
+
+        //Newer shadow
+        target.getPluginManager().withPlugin("com.gradleup.shadow", ignored -> {
+            TaskProvider<Jar> shadowJar =
+                target.getTasks().named("shadowJar", Jar.class);
+
+            customTask.configure(task -> {
+                task.getInputJar().set(
+                    shadowJar.flatMap(Jar::getArchiveFile)
+                );
+            });
+        });
+
+        //Older shadow
+        target.getPluginManager().withPlugin("com.github.johnrengelman.shadow", ignored -> {
+            TaskProvider<Jar> shadowJar =
+                target.getTasks().named("shadowJar", Jar.class);
+
+            customTask.configure(task -> {
+                task.getInputJar().set(
+                    shadowJar.flatMap(Jar::getArchiveFile)
+                );
+            });
+        });
+
+        
         
 
         //Our task needs to run once the build task is finished
