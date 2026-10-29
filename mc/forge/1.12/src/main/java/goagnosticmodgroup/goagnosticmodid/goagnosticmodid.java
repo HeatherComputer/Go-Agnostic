@@ -73,7 +73,7 @@ public class goagnosticmodid
     {
         try {
             CommandHandler.Registrar.registerCommands(event);
-        } catch (ClassNotFoundException e) {
+        } catch (NoClassDefFoundError e) {
             //Mod has no commands
         }
         server = event.getServer();
