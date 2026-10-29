@@ -10,6 +10,7 @@ import com.mojang.logging.LogUtils;
 import computer.heather.goagnostic.api.baseclasses.GoAgnosticMod;
 import computer.heather.goagnostic.api.util.placeholders.GoAgnosticModPlaceholder;
 import goagnosticmodgroup.goagnosticmodid.util.Player;
+import goagnosticmodgroup.goagnosticmodid.util.Server;
 import goagnosticmodgroup.goagnosticmodid.util.chat.ChatHandler;
 import net.minecraft.server.MinecraftServer;
 import net.neoforged.bus.api.IEventBus;
@@ -50,13 +51,7 @@ public class goagnosticmodid {
         NeoForge.EVENT_BUS.register(this);
         NeoForge.EVENT_BUS.register(new ChatHandler());
         
-        goAgnosticMod.internal_setPlayerSupplier(() ->
-            server.getPlayerList()
-                .getPlayers()
-                .stream()
-                .map(Player::new)
-                .toArray(Player[]::new)
-        );
+        goAgnosticMod.internal_setServerSupplier(() -> new Server());
     }
 
     @SubscribeEvent
