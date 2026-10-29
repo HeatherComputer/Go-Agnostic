@@ -33,7 +33,7 @@ public enum ArgumentType {
 			case INTEGER:
 				return reader.readInt();
 			case PLAYER: {
-                Player[] players = GoAgnosticMod.getInstance().getPlayers();
+                Player[] players = GoAgnosticMod.getInstance().getServer().getPlayers();
                 String username = reader.readString(); 
                 for (Player player : players) {
                     //Check username and then UUID.

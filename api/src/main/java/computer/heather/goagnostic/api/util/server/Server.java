@@ -4,6 +4,7 @@ import java.io.File;
 
 import computer.heather.goagnostic.api.command.CommandResult;
 import computer.heather.goagnostic.api.command.CommandSource;
+import computer.heather.goagnostic.api.util.player.Player;
 
 public interface Server extends CommandSource {
     
@@ -16,6 +17,8 @@ public interface Server extends CommandSource {
     File getWorldDir();
 
     CommandResult executeCommand(String command);
+    
+    Player[] getPlayers();
 
 
 }

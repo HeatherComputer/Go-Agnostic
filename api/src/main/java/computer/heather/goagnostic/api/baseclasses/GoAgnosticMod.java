@@ -4,6 +4,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import computer.heather.goagnostic.api.util.player.Player;
+import computer.heather.goagnostic.api.util.server.Server;
 
 public class GoAgnosticMod {
 
@@ -29,7 +30,7 @@ public class GoAgnosticMod {
     public final String MOD_ID;
     public final Logger LOGGER;
 
-    private Supplier<Player[]> playerSupplier;
+    private Supplier<Server> serverSupplier;
 
     private static GoAgnosticMod INSTANCE;
 
@@ -84,12 +85,12 @@ public class GoAgnosticMod {
     }
 
 
-    public final Player[] getPlayers() {
-        return playerSupplier.get();
+    public final Server getServer() {
+        return serverSupplier.get();
     }
 
-    public final void internal_setPlayerSupplier(Supplier<Player[]> supplier) {
-        this.playerSupplier = supplier;
+    public final void internal_setServerSupplier(Supplier<Server> supplier) {
+        this.serverSupplier = supplier;
     }
 
 
