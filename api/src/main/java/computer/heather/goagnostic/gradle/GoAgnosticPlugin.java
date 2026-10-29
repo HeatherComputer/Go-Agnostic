@@ -49,11 +49,14 @@ public class GoAgnosticPlugin implements Plugin<Project> {
         TaskProvider<GoAgnosticTask> customTask = target.getTasks().register(
             "GoAgnosticFinalise", GoAgnosticTask.class, task -> {
 
-                task.getInputJar().set(
+                task.getInputJar().convention(
                     jarTask.flatMap(Jar::getArchiveFile)
                 );
                 task.getProjectVersion().set(
                     target.getVersion().toString()
+                );
+                task.getArchiveBaseName().convention(
+                    jarTask.flatMap(Jar::getArchiveBaseName)
                 );
             }
         );
@@ -69,6 +72,10 @@ public class GoAgnosticPlugin implements Plugin<Project> {
                 task.getInputJar().set(
                     shadowJar.flatMap(Jar::getArchiveFile)
                 );
+
+                task.getArchiveBaseName().set(
+                    shadowJar.flatMap(Jar::getArchiveBaseName)
+                );
             });
         });
 
@@ -80,6 +87,10 @@ public class GoAgnosticPlugin implements Plugin<Project> {
             customTask.configure(task -> {
                 task.getInputJar().set(
                     shadowJar.flatMap(Jar::getArchiveFile)
+                );
+
+                task.getArchiveBaseName().set(
+                    shadowJar.flatMap(Jar::getArchiveBaseName)
                 );
             });
         });
@@ -109,6 +120,8 @@ public class GoAgnosticPlugin implements Plugin<Project> {
         public abstract RegularFileProperty getInputJar();
         @Input
         public abstract Property<String> getProjectVersion();
+        @Input
+        public abstract Property<String> getArchiveBaseName();
 
 
         @TaskAction
@@ -117,7 +130,7 @@ public class GoAgnosticPlugin implements Plugin<Project> {
             ArrayList<Exception> errors = new ArrayList<>();
 
             //Get the name we need to use as a base
-            String baseName = jarTask.get().getArchiveBaseName().get();
+            String baseName = getArchiveBaseName().get();
 
             //Get a version
             String version = getProjectVersion().get().equals("") ? "" : "-" + getProjectVersion().get();
