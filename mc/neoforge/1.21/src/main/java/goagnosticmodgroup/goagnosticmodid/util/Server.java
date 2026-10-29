@@ -1,16 +1,20 @@
 package goagnosticmodgroup.goagnosticmodid.util;
 
 import java.io.File;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import computer.heather.goagnostic.api.command.CommandResult;
 import goagnosticmodgroup.goagnosticmodid.goagnosticmodid;
+import net.minecraft.commands.CommandSource;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.storage.LevelResource;
 
 public class Server implements computer.heather.goagnostic.api.util.server.Server {
 
     @Override
     public void sendMessage(String message) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'sendMessage'");
+        goagnosticmodid.server.sendSystemMessage(Component.literal(message));
     }
 
     @Override
@@ -25,14 +29,45 @@ public class Server implements computer.heather.goagnostic.api.util.server.Serve
 
     @Override
     public File getWorldDir() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getWorldDir'");
+        return goagnosticmodid.server.getWorldPath(LevelResource.ROOT).toFile().getParentFile();
     }
 
     @Override
     public CommandResult executeCommand(String command) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'executeCommand'");
+        StringBuilder builder = new StringBuilder();
+        AtomicBoolean success = new AtomicBoolean(); //this is just used to deal with effectively final bs
+        //ugh
+        CommandSource source = new CommandSource() {
+
+            @Override
+            public void sendSystemMessage(Component component) {
+                builder.append(component.getString() + "\n");
+            }
+
+            @Override
+            public boolean acceptsSuccess() {
+                return true;
+            }
+
+            @Override
+            public boolean acceptsFailure() {
+                return true;
+            }
+
+            @Override
+            public boolean shouldInformAdmins() {
+                return true;
+            }
+            
+        };
+        CommandSourceStack stack = goagnosticmodid.server.createCommandSourceStack().withSource(source)
+            .withCallback((succeeded, result) -> {
+                success.set(succeeded);
+            });
+        
+        goagnosticmodid.server.getCommands().performPrefixedCommand(stack, command);
+
+        return new CommandResult(builder.toString(), success.get());
     }
 
     @Override
