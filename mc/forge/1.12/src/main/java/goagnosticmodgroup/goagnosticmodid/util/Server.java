@@ -6,6 +6,7 @@ import java.util.StringJoiner;
 import computer.heather.goagnostic.api.command.CommandResult;
 import goagnosticmodgroup.goagnosticmodid.goagnosticmodid;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
@@ -71,6 +72,18 @@ public class Server implements computer.heather.goagnostic.api.util.server.Serve
 
         return new CommandResult(joiner.toString(), result > 0);
 
+    }
+
+
+    
+
+    public Player[] getPlayers() {
+        EntityPlayer[] onlinePlayers = goagnosticmodid.server.getPlayerList().getPlayers().toArray(new EntityPlayer[0]);
+        Player[] result = new Player[onlinePlayers.length];
+        for (int i = 0; i < onlinePlayers.length; i++) {
+            result[i] = new Player(onlinePlayers[i]);
+        }
+        return result;
     }
     
 }

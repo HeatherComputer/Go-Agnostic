@@ -10,6 +10,7 @@ import computer.heather.goagnostic.api.baseclasses.GoAgnosticMod;
 import computer.heather.goagnostic.api.util.placeholders.GoAgnosticModPlaceholder;
 import goagnosticmodgroup.goagnosticmodid.util.CommandHandler;
 import goagnosticmodgroup.goagnosticmodid.util.Player;
+import goagnosticmodgroup.goagnosticmodid.util.Server;
 import goagnosticmodgroup.goagnosticmodid.util.chat.ChatHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
@@ -56,7 +57,7 @@ public class goagnosticmodid
         //Reflection's ugly. But this is the only way to instantiate the user mod class without knowing its name at compile time. This class does need to be compilable.
         Constructor<?> constructor = goAgnosticModClass.getDeclaredConstructor(String.class, String.class, GoAgnosticMod.Logger.class);
         goAgnosticMod = (GoAgnosticMod) constructor.newInstance(MOD_NAME, MOD_ID, new GoAgnosticMod.Logger(LOGGER::info, LOGGER::warn, LOGGER::error));
-        goAgnosticMod.internal_setPlayerSupplier(this::getPlayers);
+        goAgnosticMod.internal_setServerSupplier(() -> new Server());
         LOGGER.info("Go!Agnostic Mod {} ({}) has been initialized.", MOD_NAME, MOD_ID);
     }
 
@@ -111,14 +112,5 @@ public class goagnosticmodid
     /*
     Below consists of some internal methods that aren't useful to the user.
     */
-
-    public Player[] getPlayers() {
-        EntityPlayer[] onlinePlayers = server.getPlayerList().getPlayers().toArray(new EntityPlayer[0]);
-        Player[] result = new Player[onlinePlayers.length];
-        for (int i = 0; i < onlinePlayers.length; i++) {
-            result[i] = new Player(onlinePlayers[i]);
-        }
-        return result;
-    }
 
 }
