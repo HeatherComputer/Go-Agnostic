@@ -56,7 +56,7 @@ public class TestGoAgnosticMod extends GoAgnosticMod {
             ChatManager.sendSystemMessage("Oi Oi");
         }
         if (message.getText().contains("marco")) {
-            for (Player player : getPlayers()) {
+            for (Player player : getServer().getPlayers()) {
                 LOGGER.info(player.getName());
                 player.sendMessage("POLO!");
             }
