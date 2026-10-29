@@ -38,6 +38,7 @@ public class ProcessorBase extends AbstractProcessor {
     //This is for ALL versions. Mod.Target has a method for target-specific classes!
     public static final String[] otherClasses = new String[] {
         "/util/Player",
+        "/util/Server",
         "/util/chat/ChatHandler",
         "/util/chat/Message",
         "/util/CommandHandler",
