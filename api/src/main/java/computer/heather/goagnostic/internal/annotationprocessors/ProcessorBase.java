@@ -66,14 +66,14 @@ public class ProcessorBase extends AbstractProcessor {
             if (annotation.getQualifiedName().contentEquals("computer.heather.goagnostic.api.annotations.Mod")) {
                 if (duplicate) {
                     processingEnv.getMessager().printMessage(Kind.ERROR, "Multiple annotations found. Only one @Mod annotation is allowed.");
-                    return false;
+                    return true;
                 }
                 duplicate = true;
             }
         }
 
         //We know there's only one.
-        if (roundEnv.getElementsAnnotatedWith(Mod.class).isEmpty()) return false; //Something has gone very wrong
+        if (roundEnv.getElementsAnnotatedWith(Mod.class).isEmpty()) return true; //Something has gone very wrong
 
         Element modElement = roundEnv.getElementsAnnotatedWith(Mod.class).iterator().next();
         Mod mod = modElement.getAnnotation(Mod.class);
@@ -88,12 +88,16 @@ public class ProcessorBase extends AbstractProcessor {
         ModProcessor modProcessor = new ModProcessor();
         CommandProcessor commandProcessor = new CommandProcessor();
 
+        if (!(processingEnv.getTypeUtils().isSubtype(modElement.asType(), processingEnv.getElementUtils().getTypeElement("computer.heather.goagnostic.api.baseclasses.GoAgnosticMod").asType()))) {
+            processingEnv.getMessager().printMessage(Kind.ERROR, "Mod class must extend GoAgnosticMod!", modElement);
+            return true;
+        }
+
         for (Mod.Target target : targets) {
 
             dirs.add(target.getImplName());
 
             //Process the main mod class
-            processingEnv.getMessager().printMessage(Kind.NOTE, "Starting ModProcessor");
             try {
                 modProcessor.processTarget(target, roundEnv, processingEnv, mod, modElement);
             } catch (IOException e) {
@@ -225,7 +229,7 @@ public class ProcessorBase extends AbstractProcessor {
             }
         }
 
-        return false;
+        return true;
     }
 
 }
