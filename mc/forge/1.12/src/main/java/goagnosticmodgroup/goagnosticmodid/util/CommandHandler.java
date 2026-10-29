@@ -26,7 +26,7 @@ public class CommandHandler {
                     ctx = new CommandContext(player, null);
                 }
                 else {
-                    ctx = null; //TODO!
+                    ctx = new CommandContext(new Server(), null); //TODO!
                 }
                 return checker.apply(ctx);
  
@@ -64,7 +64,7 @@ public class CommandHandler {
                 ctx = CommandContext.create(player, String.join(" ", args), arguments);
             }
             else {
-                ctx = null; //TODO!
+                ctx = CommandContext.create(new Server(), String.join(" ", args), arguments);
             }
             method.invoke(null, ctx);
         } catch (Exception e) {
