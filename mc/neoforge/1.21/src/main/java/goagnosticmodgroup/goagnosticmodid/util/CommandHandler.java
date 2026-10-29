@@ -54,7 +54,7 @@ public class CommandHandler implements Command<CommandSourceStack> {
             ctx = new CommandContext(player, args);
         }
         else {
-            ctx = null; //TODO!
+            ctx = new CommandContext(new Server(), args); //TODO!
         }
 
         runner.accept(ctx);
@@ -79,7 +79,7 @@ public class CommandHandler implements Command<CommandSourceStack> {
                 ctx = new CommandContext(player, null);
             }
             else {
-                ctx = null; //TODO!
+                ctx = new CommandContext(new Server(), null); //TODO!
             }
             return checker.apply(ctx).booleanValue();
         }
