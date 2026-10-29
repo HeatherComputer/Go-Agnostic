@@ -3,39 +3,71 @@ package computer.heather.goagnostic.api.util.chat;
 public class ChatSymbols {
     
 
-    public static class Formatting {
+    public static enum Formatting {
         //Shuffles each character repeatedly so it's impossible to read
-        public static final String OBFUSCATED = "§k";
+        OBFUSCATED("§k"),
         //Emboldens the text
-        public static final String BOLD = "§l";
+        BOLD("§l"),
         //Draws a line through the centre of the text vertically
-        public static final String STRIKETHROUGH = "§m";
+        STRIKETHROUGH("§m"),
         //Draws a line underneath the text
-        public static final String UNDERLINE = "§n";
+        UNDERLINE("§n"),
         //Italicises the text  
-        public static final String ITALIC = "§o";
+        ITALIC("§o"),
         //Removes all formatting codes
-        public static final String RESET = "§r";
+        RESET("§r");
+
+        private final String code;
+
+        Formatting(String code) {
+            this.code = code;
+        }
+
+        public String getCode() {
+            return code;
+        }
+
+        @Override
+        public String toString() {
+            return code;
+        }
+
     }
 
     //Fuck ignoring the U.
-    public static class Colour {
-        public static final String BLACK = "§0";
-        public static final String DARK_BLUE = "§1";
-        public static final String DARK_GREEN = "§2";
-        public static final String DARK_AQUA = "§3";
-        public static final String DARK_RED = "§4";
-        public static final String DARK_PURPLE = "§5";
-        public static final String GOLD = "§6";
-        public static final String GRAY = "§7";
-        public static final String DARK_GRAY = "§8";
-        public static final String BLUE = "§9";
-        public static final String GREEN = "§a";
-        public static final String AQUA = "§b";
-        public static final String RED = "§c";
-        public static final String LIGHT_PURPLE = "§d";
-        public static final String YELLOW = "§e";
-        public static final String WHITE = "§f";
+    public static enum Colour {
+
+        BLACK("§0"),
+        DARK_BLUE("§1"),
+        DARK_GREEN("§2"),
+        DARK_AQUA("§3"),
+        DARK_RED("§4"),
+        DARK_PURPLE("§5"),
+        GOLD("§6"),
+        GRAY("§7"),
+        DARK_GRAY("§8"),
+        BLUE("§9"),
+        GREEN("§a"),
+        AQUA("§b"),
+        RED("§c"),
+        LIGHT_PURPLE("§d"),
+        YELLOW("§e"),
+        WHITE("§f");
+
+        private final String code;
+
+        Colour(String code) {
+            this.code = code;
+        }
+
+        public String getCode() {
+            return code;
+        }
+
+        @Override
+        public String toString() {
+            return code;
+        }
     }
 
     
