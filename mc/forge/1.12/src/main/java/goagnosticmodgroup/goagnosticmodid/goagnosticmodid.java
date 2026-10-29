@@ -71,7 +71,11 @@ public class goagnosticmodid
     @EventHandler
     public void onServerStarting(FMLServerStartingEvent event) throws InstantiationException, IllegalAccessException
     {
-        CommandHandler.Registrar.registerCommands(event);
+        try {
+            CommandHandler.Registrar.registerCommands(event);
+        } catch (ClassNotFoundException e) {
+            //Mod has no commands
+        }
         server = event.getServer();
         goAgnosticMod.onServerStarting();
         
