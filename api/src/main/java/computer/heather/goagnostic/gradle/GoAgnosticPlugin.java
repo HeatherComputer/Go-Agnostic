@@ -12,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.ArrayList;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -101,7 +102,7 @@ public class GoAgnosticPlugin implements Plugin<Project> {
     }
     public static abstract class GoAgnosticTask extends DefaultTask {
 
-        static boolean success = true;
+        
 
 
         @InputFile
@@ -113,6 +114,7 @@ public class GoAgnosticPlugin implements Plugin<Project> {
         @TaskAction
         public void run() throws IOException {
             getLogger().lifecycle("Merging generated classes with user provided classes...");
+            ArrayList<Exception> errors = new ArrayList<>();
 
             //Get the name we need to use as a base
             String baseName = jarTask.get().getArchiveBaseName().get();
@@ -228,15 +230,22 @@ public class GoAgnosticPlugin implements Plugin<Project> {
                     
                 } catch (Exception e) {
                     getLogger().error("Error with target: " + target + " : " + e.getMessage(), e);
-                    GoAgnosticTask.success = false;
+                    e.printStackTrace();
+                    errors.add(e);
                 }
             });
 
             targets.close();
 
             //Throw if failed
-            if (!GoAgnosticTask.success) {
-                throw new GradleException("An error was encountered processing one or more targets!");
+            if (!errors.isEmpty()) {    
+                GradleException exception = new GradleException("An error was encountered processing " + errors.size() + " target(s)!");
+
+                for (Exception failure : errors) {
+                    exception.addSuppressed(failure);
+                }
+
+                throw exception;
             }
 
             //Finally, get rid of the original jar to avoid confusion
