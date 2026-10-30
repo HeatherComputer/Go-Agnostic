@@ -1,0 +1,13 @@
+[
+  {
+    "modid": "goagnosticmodid",
+    "name": "goagnosticmodversion",
+    "version": "goagnosticmodversion",
+    "mcversion": "1.7.10",
+    "description": "goagnosticmoddescription",
+    "url": "",
+    "credits": "",
+    "authorList": ["goagnosticmodauthors"],
+    "dependencies": []
+  }
+]
