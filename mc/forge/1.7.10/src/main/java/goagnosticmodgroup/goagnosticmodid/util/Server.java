@@ -83,7 +83,7 @@ public class Server implements computer.heather.goagnostic.api.util.server.Serve
 
     @SuppressWarnings("unchecked")
     public Player[] getPlayers() {
-        List<EntityPlayerMP> onlinePlayers =MinecraftServer.getServer().getConfigurationManager().playerEntityList;
+        List<EntityPlayerMP> onlinePlayers = goagnosticmodid.server.getConfigurationManager().playerEntityList;
         Player[] result = new Player[onlinePlayers.size()];
         for (int i = 0; i < onlinePlayers.size(); i++) {
             result[i] = new goagnosticmodgroup.goagnosticmodid.util.Player(onlinePlayers.get(i));
