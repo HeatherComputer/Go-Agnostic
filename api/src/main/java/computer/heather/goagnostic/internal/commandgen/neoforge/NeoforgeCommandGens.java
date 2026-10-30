@@ -22,7 +22,7 @@ public class NeoforgeCommandGens {
     
     public static class NEO_1_21 extends CommandGen {
 
-        int count = 1;
+        int count = 3;
 
         public NEO_1_21(String implName) throws IOException {
             super(
