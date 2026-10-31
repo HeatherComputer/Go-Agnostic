@@ -1,6 +1,5 @@
 package goagnosticmodgroup.goagnosticmodid;
 
-import net.minecraft.command.CommandHandler;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraft.util.IProgressUpdate;
@@ -23,8 +22,10 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.relauncher.Side;
+import goagnosticmodgroup.goagnosticmodid.util.CommandHandler;
 import goagnosticmodgroup.goagnosticmodid.util.Player;
 import goagnosticmodgroup.goagnosticmodid.util.Server;
+import goagnosticmodgroup.goagnosticmodid.util.chat.ChatHandler;
 import net.minecraftforge.common.MinecraftForge;
 
 import java.io.File;
@@ -68,13 +69,14 @@ public class goagnosticmodid
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
         FMLCommonHandler.instance().bus().register(this);
+        MinecraftForge.EVENT_BUS.register(new ChatHandler());
     }
 
     @EventHandler
-    public void onServerStarting(FMLServerStartingEvent event)
+    public void onServerStarting(FMLServerStartingEvent event) throws InstantiationException, IllegalAccessException
     {
         try {
-            //CommandHandler.Registrar.registerCommands(event);
+            CommandHandler.Registrar.registerCommands(event);
         } catch (NoClassDefFoundError e) {
             //Mod has no commands
         }
