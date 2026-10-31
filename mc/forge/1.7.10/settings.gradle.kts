@@ -1,4 +1,4 @@
-rootProject.name = "RFGExampleMod"
+rootProject.name = "Go!Agnostic 1.7.10 Template"
 
 pluginManagement {
   repositories {
