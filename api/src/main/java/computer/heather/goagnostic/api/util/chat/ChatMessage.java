@@ -11,7 +11,8 @@ public interface ChatMessage {
     public Player getSender();
 
     public String getText();
-
+ 
+    //THIS IS NOT CURRENTLY FUNCTIONAL OR RECCOMENDED
     //WARNING: On newer versions, this will lead to a message's signature being removed!
     //A workaround is to block the message and send a system message that visually looks the same.
     public void setText(String in);
