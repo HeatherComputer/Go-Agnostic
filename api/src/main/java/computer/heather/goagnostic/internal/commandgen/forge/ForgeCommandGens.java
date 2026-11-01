@@ -238,7 +238,7 @@ public class ForgeCommandGens {
 
             //Create the method
             //We use a custom execute method that gets called by the super class
-            createMethod(Opcodes.ACC_PUBLIC, "gaexecute", "(Lnet/minecraft/server/MinecraftServer;Lnet/minecraft/command/ICommandSender;[Ljava/lang/String;)V");
+            createMethod(Opcodes.ACC_PUBLIC, "gaexecute", "(Lnet/minecraft/command/ICommandSender;[Ljava/lang/String;)V");
 
             //Then inject into it
             String toInject = new String(ProcessorUtils.readAllBytes(CommandProcessor.class.getResourceAsStream("/commandgen/" + target.getImplName() + "/executes")))

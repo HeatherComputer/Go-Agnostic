@@ -10,7 +10,7 @@ import computer.heather.goagnostic.api.util.chat.ChatSymbols.Colour;
 import computer.heather.goagnostic.api.util.player.Player;
 
 
-@Mod(modName = "Test Mod Name", modid = "testmodid", targets = { Target.NEO_1_21, Target.FORGE_1_12 }, 
+@Mod(modName = "Test Mod Name", modid = "testmodid", targets = { Target.NEO_1_21, Target.FORGE_1_12, Target.FORGE_1_7_10 }, 
 version = "1", group = "Test Mod Group", authors = { "Heather" }, description = "This is a test mod for GoAgnostic", license = "BSD-3-Clause")
 public class TestGoAgnosticMod extends GoAgnosticMod {
 
@@ -20,6 +20,7 @@ public class TestGoAgnosticMod extends GoAgnosticMod {
 
     */
 
+    private static int ticks = 0;
 
 
     public TestGoAgnosticMod(String modName, String modId, GoAgnosticMod.Logger logger) throws Exception {
@@ -61,6 +62,14 @@ public class TestGoAgnosticMod extends GoAgnosticMod {
                 player.sendMessage("POLO!");
             }
         } 
+    }
+
+    @Override
+    public void serverTick() {
+        ticks++;
+        if (ticks % 5 == 0) {
+            LOGGER.info("tick!");
+        }
     }
 
 
