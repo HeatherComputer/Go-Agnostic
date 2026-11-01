@@ -21,6 +21,7 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
 @Mod(goagnosticmodid.MOD_ID)
 public class goagnosticmodid {
@@ -80,6 +81,11 @@ public class goagnosticmodid {
     public void onPlayerDisconnect(PlayerEvent.PlayerLoggedOutEvent event) {
         Player player = new Player(event.getEntity());
         goAgnosticMod.playerLeave(player);
+    }
+
+    @SubscribeEvent
+    public void onTick(ServerTickEvent.Pre event) {
+        goAgnosticMod.serverTick();
     }
 
 
