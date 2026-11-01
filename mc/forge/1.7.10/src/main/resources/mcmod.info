@@ -2,7 +2,7 @@
   {
     "modid": "goagnosticmodid",
     "name": "goagnosticmodversion",
-    "version": "goagnosticmodversion",
+    "version": "goagnosticmodname",
     "mcversion": "1.7.10",
     "description": "goagnosticmoddescription",
     "url": "",
