@@ -11,8 +11,8 @@ plugins {
 }
 
 // Project properties
-group = "rfg.examplemod"
-version = "1.0.0"
+group = "goagnosticmodgroup"
+version = "goagnosticmodversion"
 
 // Set the toolchain version to decouple the Java we run Gradle with from the Java used to compile and run the mod
 java {
@@ -48,12 +48,6 @@ minecraft {
   // Exclude some Maven dependency groups from being automatically included in the reobfuscated runs
   groupsToExcludeFromAutoReobfMapping.addAll("com.diffplug", "com.diffplug.durian", "net.industrial-craft")
 }
-
-// Generates a class named rfg.examplemod.Tags with the mod version in it, you can find it at
-tasks.injectTags.configure {
-  outputClassName.set("${project.group}.Tags")
-}
-
 // Put the version from gradle into mcmod.info
 tasks.processResources.configure {
   val projVersion = project.version.toString() // Needed for configuration cache to work
@@ -62,6 +56,11 @@ tasks.processResources.configure {
   filesMatching("mcmod.info") {
     expand(mapOf("modVersion" to projVersion))
   }
+}
+
+//name
+tasks.reobfJar.configure {
+    archiveFileName.set("GoAgnosticTemplate-forge-1.7.10.jar")
 }
 
 // Create a new dependency type for runtime-only dependencies that don't get included in the maven publication
