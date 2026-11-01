@@ -21,7 +21,8 @@ public @interface Mod {
 
     public static enum Target {
         NEO_1_21,
-        FORGE_1_12;
+        FORGE_1_12,
+        FORGE_1_7_10;
 
 
         public String getImplName() {
@@ -31,6 +32,8 @@ public @interface Mod {
                     return "neoforge-1.21";
                 case FORGE_1_12:
                     return "forge-1.12";
+                case FORGE_1_7_10:
+                    return "forge-1.7.10";
 
                 default:
                     throw new IllegalArgumentException("Unknown target: " + this);
@@ -44,6 +47,7 @@ public @interface Mod {
                 case NEO_1_21:
                     return "META-INF/neoforge.mods.toml";
                 case FORGE_1_12:
+                case FORGE_1_7_10:
                     return "mcmod.info";
 
                 default:
@@ -54,7 +58,8 @@ public @interface Mod {
 
         public String[] getExtraTargets() {
             switch (this) {
-                case FORGE_1_12: return new String[]{"/util/GACommandBase"};
+                case FORGE_1_12: 
+                case FORGE_1_7_10: return new String[]{"/util/GACommandBase"};
                 default : return new String[] {};
             }
         }

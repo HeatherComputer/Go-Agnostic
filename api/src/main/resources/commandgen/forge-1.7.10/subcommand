@@ -1,0 +1,5 @@
+aload 0
+new SUBCOMMANDNAME
+dup 
+invokespecial SUBCOMMANDNAME <init> ()V
+invokevirtual goagnosticmodgroup/goagnosticmodid/goagnosticcommandclassname addSubcommand (Lnet/minecraft/command/ICommand;)V

@@ -120,6 +120,8 @@ public abstract class CommandGen {
             
             case FORGE_1_12:
                 return new ForgeCommandGens.FORGE_1_12(target.getImplName(), qualifiedName);
+            case FORGE_1_7_10:
+                return new ForgeCommandGens.FORGE_1_7_10(target.getImplName(), qualifiedName);
 
             default:
                 throw new IllegalArgumentException("Unknown target: " + target.getImplName());
