@@ -1,9 +1,7 @@
 ## Hello!
 
-What's here is compilable for the sake of testing. 
+What's here is compilable, but is not directly ran outside of some tests.
 
-However, when Go!Agnostic itself is packaged up, it doesn't compile these!
+Instead, the compiled bytecode is copied, modified and then inserted into output JARs according to a Go!Agnostic mod's targets.
 
-Instead, these are packaged up raw, and then *modified and compiled* according to a mod's targets when a mod uses Go!Agnostic. (ideally, may change in future)
-
-This helps me implement Go!Agnostic properly, along with having reliable tests for all of its functionality.
+This eases development and reduces the amount of manual bytecode writing I need to do.
