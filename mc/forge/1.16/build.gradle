@@ -1,0 +1,88 @@
+plugins {
+    id 'eclipse'
+    id 'idea'
+    id 'maven-publish'
+    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+}
+
+// Keep the original mod coordinates and artifact filename.
+group = 'goagnosticmodgroup'
+version = findProperty('mod_version') ?: '1.0.0'
+
+// Minecraft 1.16.5 targets Java 8.
+java.toolchain.languageVersion = JavaLanguageVersion.of(8)
+
+println "Java: ${System.getProperty('java.version')} JVM: ${System.getProperty('java.vm.version')} (${System.getProperty('java.vendor')}) Arch: ${System.getProperty('os.arch')}"
+
+minecraft {
+    mappings channel: 'official', version: '1.16.5'
+    copyIdeResources = true
+
+    // Keep the original access transformer. This file must exist.
+    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+
+    runs {
+        configureEach {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+
+            mods {
+                goagnosticmodid {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        client { }
+
+        server {
+            // Uncomment if a noninteractive dedicated server run is desired.
+            // args '--nogui'
+        }
+
+        data {
+            args '--mod', 'goagnosticmodid', '--all',
+                    '--output', file('src/generated/resources/'),
+                    '--existing', file('src/main/resources/')
+        }
+    }
+}
+
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+dependencies {
+    // Original Forge version, confirmed working in your ForgeGradle 6 MDK.
+    minecraft 'net.minecraftforge:forge:1.16.5-36.1.0'
+}
+
+tasks.named('processResources', ProcessResources).configure {
+    def replaceProperties = [mod_version: project.version]
+    inputs.properties replaceProperties
+
+    filesMatching('META-INF/mods.toml') {
+        expand replaceProperties + [project: project]
+    }
+}
+
+tasks.named('jar', Jar).configure {
+    archiveFileName.set('GoAgnosticTemplate-forge-1.16.jar')
+    finalizedBy 'reobfJar'
+}
+
+publishing {
+    publications {
+        register('mavenJava', MavenPublication) {
+            artifact jar
+        }
+    }
+    repositories {
+        maven {
+            url = uri("${project.projectDir}/mcmodsrepo")
+        }
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
