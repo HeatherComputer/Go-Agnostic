@@ -21,6 +21,7 @@ public @interface Mod {
 
     public static enum Target {
         NEO_1_21,
+        FORGE_1_16,
         FORGE_1_12,
         FORGE_1_7_10;
 
@@ -30,6 +31,8 @@ public @interface Mod {
 
                 case NEO_1_21:
                     return "neoforge-1.21";
+                case FORGE_1_16:
+                    return "forge-1.16";
                 case FORGE_1_12:
                     return "forge-1.12";
                 case FORGE_1_7_10:
@@ -41,14 +44,16 @@ public @interface Mod {
             }
         }
 
-        public String getModTomlTemplatePath() {
+        public String[] getModTextTemplatePaths() {
             switch (this) {
 
                 case NEO_1_21:
-                    return "META-INF/neoforge.mods.toml";
+                    return new String[]{"META-INF/neoforge.mods.toml"};
+                case FORGE_1_16:
+                    return new String[]{"META-INF/mods.toml", "META-INF/pack.mcmeta"};
                 case FORGE_1_12:
                 case FORGE_1_7_10:
-                    return "mcmod.info";
+                    return new String[]{"mcmod.info"};
 
                 default:
                     throw new IllegalArgumentException("Unknown target: " + this);
@@ -56,7 +61,7 @@ public @interface Mod {
             }
         }
 
-        public String[] getExtraTargets() {
+        public String[] getExtraClasses() {
             switch (this) {
                 case FORGE_1_12: 
                 case FORGE_1_7_10: return new String[]{"/util/GACommandBase"};
