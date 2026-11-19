@@ -50,7 +50,7 @@ public @interface Mod {
                 case NEO_1_21:
                     return new String[]{"META-INF/neoforge.mods.toml"};
                 case FORGE_1_16:
-                    return new String[]{"META-INF/mods.toml", "META-INF/pack.mcmeta"};
+                    return new String[]{"META-INF/mods.toml", "pack.mcmeta"};
                 case FORGE_1_12:
                 case FORGE_1_7_10:
                     return new String[]{"mcmod.info"};

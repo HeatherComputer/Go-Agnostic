@@ -166,8 +166,6 @@ public class ProcessorBase extends AbstractProcessor {
             }
             
          
-            //Now we need to output a correctly generated mods.toml (or similar for the version in use)
-            String inputLocation = "/templates/GoAgnosticTemplate-" + target.getImplName() + "/" + target.getModTextTemplatePaths();
             try {
                 //This is cursed but may work. Toml should be in the right spot, and then the right spot relative to the manually outputted class
                 //ModTomlRemapper.remapModToml(inputLocation, outputLocation, mod, ModProcessor.class);
@@ -175,6 +173,8 @@ public class ProcessorBase extends AbstractProcessor {
                 File buildDir = ProcessorUtils.getBuildDir(processingEnv);
                 File outputDir = new File(buildDir, "goagnostic/" + target.getImplName());
                 for (String fileName : target.getModTextTemplatePaths()) {
+                    //Now we need to output a correctly generated mods.toml (or similar for the version in use)
+                    String inputLocation = "/templates/GoAgnosticTemplate-" + target.getImplName() + "/" + fileName;
                     File outputFile = new File(outputDir, fileName);
                     if (!outputFile.getParentFile().exists()) outputFile.getParentFile().mkdirs();
                     ModTomlRemapper.remapModToml(inputLocation, outputFile, mod, getClass());
