@@ -25,6 +25,8 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
 
 
 
@@ -102,6 +104,13 @@ public class goagnosticmodid
     public void onPlayerLeave(PlayerEvent.PlayerLoggedOutEvent event) {
         Player player = new Player(event.player);
         goAgnosticMod.playerLeave(player);
+    }
+
+    @SubscribeEvent 
+    public void onTick(ServerTickEvent event) {
+        if (event.phase == TickEvent.Phase.END) {
+            goAgnosticMod.serverTick();
+        }
     }
 
 

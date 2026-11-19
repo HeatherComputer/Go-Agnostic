@@ -20,7 +20,7 @@ public class Player implements computer.heather.goagnostic.api.util.player.Playe
 
     @Override
     public String getUUID() {
-        return player.getName();
+        return player.getGameProfile().getId().toString();
     }
 
     @Override
