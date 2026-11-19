@@ -118,6 +118,10 @@ public abstract class CommandGen {
             case NEO_1_21:
                 return new NeoforgeCommandGens.NEO_1_21(target.getImplName());
             
+            //now this is a big test
+            case FORGE_1_16:
+                return new NeoforgeCommandGens.NEO_1_21(target.getImplName());
+            
             case FORGE_1_12:
                 return new ForgeCommandGens.FORGE_1_12(target.getImplName(), qualifiedName);
             case FORGE_1_7_10:

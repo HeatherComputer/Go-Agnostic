@@ -1,0 +1,2 @@
+ldc COMMANDNAME
+invokestatic net/minecraft/command/Commands func_197057_a (Ljava/lang/String;)Lcom/mojang/brigadier/builder/LiteralArgumentBuilder;
